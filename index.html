@@ -476,7 +476,7 @@
 
         // --- Основная функция, которая теперь работает с Make ---
         async function searchSchools() {
-            const address = document.getElementById('addressSearch').value.trim();
+            const addressSearch = document.getElementById('addressSearch').value.trim();
             if (!address) {
                 alert('Пожалуйста, введите адрес для поиска');
                 return;
@@ -496,7 +496,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ address: address })
+                    body: JSON.stringify({ address: addressSearch })
                 });
 
                 if (!response.ok) {
@@ -505,7 +505,7 @@
 
                 const result = await response.json();
 
-                if (result.status === 'success' && result.data && result.data.schools) {
+                if (result.status === 'Accepted' && result.data && result.data.schools) {
                     currentSchools = result.data.schools; // Сохраняем отсортированные школы из Make
                     const userCoords = result.data.user_coords;
 
