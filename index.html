@@ -477,7 +477,7 @@
         // --- Основная функция, которая теперь работает с Make ---
         async function searchSchools() {
             const addressSearch = document.getElementById('addressSearch').value.trim();
-            if (!address) {
+            if (!addressSearch) {
                 alert('Пожалуйста, введите адрес для поиска');
                 return;
             }
@@ -491,13 +491,9 @@
 
             try {
                 // Отправляем GET-запрос с адресом в теле
-                const response = await fetch(MAKE_WEBHOOK_URL, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ address: addressSearch })
-                });
+            const response = await fetch(`${MAKE_WEBHOOK_URL}?address=${encodeURIComponent(addressSearch)}`, {
+            method: 'GET',
+            });
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
