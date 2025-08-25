@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск школ в Нови-Саде</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background-color: #f8f9fa;
+        }
+
+        .nav-tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            margin-bottom: 2rem;
+        }
+
+        .search-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-btn, .filter-btn {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-btn:hover, .filter-btn:hover {
+            background: #5a67d8;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .filter-select {
+            padding: 0.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            height: 600px;
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .results-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            overflow-y: auto;
+        }
+
+        .results-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        .school-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e9ecef;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .school-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .school-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .school-address {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .school-languages {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .language-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .school-contacts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .contact-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .contact-link:hover {
+            color: #5a67d8;
+        }
+
+        .documents-section {
+            padding: 2rem 0;
+        }
+
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .document-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .document-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .document-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .document-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-download, .btn-view {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-download {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #c82333;
+        }
+
+        .btn-view {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #218838;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .map-container {
+                height: 400px;
+            }
+
+            .search-controls {
+                flex-direction: column;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+
+            .nav-tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .documents-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .school-distance {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .school-card.highlighted {
+            border: 2px solid #667eea;
+            background: linear-gradient(135deg, #f0f4ff, #e8f0fe);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
+        }
+
+        .school-card.highlighted .school-name {
+            color: #667eea;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            padding: 2rem;
+        }
+
+        .distance-line {
+            color: #dc3545 !important;
+            weight: 3;
+            opacity: 0.7;
+            dashArray: '10, 10';
+        }
+
+        .no-results {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🏫 Поиск школ в Нови-Саде</h1>
+            <p>Найдите ближайшую школу по вашему адресу проживания</p>
+        </div>
+    </header>
+
+    <nav class="nav-tabs">
+        <button class="nav-tab active" onclick="showTab('search')">Поиск школ</button>
+        <button class="nav-tab" onclick="showTab('documents')">Официальные документы</button>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Вкладка поиска школ -->
+            <div id="search-tab" class="tab-content active">
+                <div class="search-section">
+                    <div class="search-controls">
+                        <input type="text" id="addressSearch" class="search-input" 
+                               placeholder="Введите ваш адрес в Нови-Саде (кириллицей или латиницей)...">
+                        <button class="search-btn" onclick="searchSchools()">🔍 Найти школы</button>
+                        <button class="filter-btn" onclick="toggleFilters()">⚙️ Фильтры</button>
+                    </div>
+                    
+                    <div id="filters" class="filters" style="display: none;">
+                        <select class="filter-select" id="languageFilter">
+                            <option value="">Все языки обучения</option>
+                            <option value="serbian">Сербский</option>
+                            <option value="hungarian">Венгерский</option>
+                            <option value="slovak">Словацкий</option>
+                            <option value="multilingual">Многоязычная</option>
+                        </select>
+                        <select class="filter-select" id="schoolTypeFilter">
+                            <option value="">Все типы школ</option>
+                            <option value="elementary">Основная школа</option>
+                            <option value="high">Средняя школа</option>
+                            <option value="specialized">Специализированная</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="content-wrapper">
+                    <div class="map-container">
+                        <div id="map"></div>
+                    </div>
+                    
+                    <div class="results-container">
+                        <h3 class="results-header">Найденные школы</h3>
+                        <div id="schoolResults">
+                            <div class="loading">Введите адрес для поиска ближайших школ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Вкладка документов -->
+            <div id="documents-tab" class="tab-content">
+                <div class="documents-section">
+                    <h2 class="section-title">📋 Официальные документы</h2>
+                    <div class="documents-grid" id="documentsGrid">
+                        <!-- Документы будут загружены динамически -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Инициализация карты
+        let map;
+        let markersGroup;
+        let currentSchools = [];
+        let userAddressMarker = null;
+        let selectedSchoolMarker = null;
+        let distanceLine = null;
+        
+        // Примерные данные школ в Нови-Саде
+        const schoolsData = [
+            {
+                id: 1,
+                name: 'ОШ "Жарко Зрењанин"',
+                address: 'Булевар Михајла Пупина 6, Нови Сад',
+                lat: 45.2671,
+                lng: 19.8335,
+                languages: ['serbian'],
+                type: 'elementary',
+                phone: '+381 21 555 123',
+                email: 'os.zarkozrenjanin@novisad.edu.rs',
+                website: 'http://oszarkozrenjanin.edu.rs',
+                telegram: 'https://t.me/oszarkozrenjanin'
+            },
+            {
+                id: 2,
+                name: 'ОШ "Браћа Рибар"',
+                address: 'Булевар ослобођења 24, Нови Сад',
+                lat: 45.2396,
+                lng: 19.8227,
+                languages: ['serbian'],
+                type: 'elementary',
+                phone: '+381 21 555 124',
+                email: 'os.bracaribar@novisad.edu.rs',
+                website: 'http://osbracaribar.edu.rs',
+                telegram: 'https://t.me/osbracaribar'
+            },
+            {
+                id: 3,
+                name: 'ОШ "Светозар Милетић"',
+                address: 'Фрушкогорска 17, Нови Сад',
+                lat: 45.2525,
+                lng: 19.8515,
+                languages: ['serbian'],
+                type: 'elementary',
+                phone: '+381 21 555 125',
+                email: 'os.svetozarmiletic@novisad.edu.rs',
+                website: 'http://ossvetozarmiletic.edu.rs',
+                telegram: 'https://t.me/ossvetmil'
+            },
+            {
+                id: 4,
+                name: 'ОШ "Sonja Marinković"',
+                address: 'Народног фронта 25, Нови Сад',
+                lat: 45.2444,
+                lng: 19.8156,
+                languages: ['hungarian'],
+                type: 'elementary',
+                phone: '+381 21 555 126',
+                email: 'os.sonjamarinkovic@novisad.edu.rs',
+                website: 'http://ossonjamarinkovic.edu.rs',
+                telegram: 'https://t.me/ossonjamar'
+            },
+            {
+                id: 5,
+                name: 'Гимназија "Исидора Секулић"',
+                address: 'Змај Јовина 4, Нови Сад',
+                lat: 45.2554,
+                lng: 19.8448,
+                languages: ['serbian', 'multilingual'],
+                type: 'high',
+                phone: '+381 21 555 127',
+                email: 'gimnazija.isidora@novisad.edu.rs',
+                website: 'http://gimnazijaisidora.edu.rs',
+                telegram: 'https://t.me/gimisidora'
+            },
+            {
+                id: 6,
+                name: 'Техничка школа "Милева Марић"',
+                address: 'Хајдук Вељкова 10, Нови Сад',
+                lat: 45.2611,
+                lng: 19.8372,
+                languages: ['serbian'],
+                type: 'specialized',
+                phone: '+381 21 555 128',
+                email: 'tehnicka.milevamaric@novisad.edu.rs',
+                website: 'http://tsmilevamaric.edu.rs',
+                telegram: 'https://t.me/tsmileva'
+            }
+        ];
+
+        // Документы
+        const documentsData = [
+            {
+                title: 'Правила уписа у основне школе',
+                description: 'Документ о процедурама и условима уписа ученика у основне школе Нови Сада',
+                type: 'PDF',
+                size: '2.3 МБ',
+                date: '15.01.2025',
+                category: 'Упис'
+            },
+            {
+                title: 'Листа потребних докумената',
+                description: 'Комплетна листа докумената неопходних за упис',
+                type: 'PDF',
+                size: '1.1 МБ',
+                date: '10.01.2025',
+                category: 'Упис'
+            },
+            {
+                title: 'Школски календар 2024/25',
+                description: 'Званични школски календар са важним датумима',
+                type: 'PDF',
+                size: '0.8 МБ',
+                date: '20.08.2024',
+                category: 'Календар'
+            },
+            {
+                title: 'Списак школских округа',
+                description: 'Табела са поделом територије по школским округима',
+                type: 'XLS',
+                size: '0.5 МБ',
+                date: '01.09.2024',
+                category: 'Територија'
+            },
+            {
+                title: 'Контакти школских установа',
+                description: 'Адресе, телефони и мејлови свих школа у Нови Саду',
+                type: 'XLS',
+                size: '1.2 МБ',
+                date: '05.01.2025',
+                category: 'Контакти'
+            },
+            {
+                title: 'Правилник о оцењивању',
+                description: 'Службени правилник о начину оцењивања ученика',
+                type: 'PDF',
+                size: '3.1 МБ',
+                date: '12.09.2024',
+                category: 'Правилници'
+            }
+        ];
+
+        function initMap() {
+            map = L.map('map').setView([45.2671, 19.8335], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            markersGroup = L.layerGroup().addTo(map);
+            
+            // Добавляем все школы на карту
+            displaySchoolsOnMap(schoolsData);
+        }
+
+        function displaySchoolsOnMap(schools, userCoords = null) {
+            markersGroup.clearLayers();
+            
+            schools.forEach((school, index) => {
+                // Создаем обычную иконку для школы
+                const schoolIcon = L.divIcon({
+                    className: 'school-marker',
+                    html: `<div style="background: ${index === 0 ? '#dc3545' : '#667eea'}; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">${index + 1}</div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                const marker = L.marker([school.lat, school.lng], { icon: schoolIcon })
+                    .bindPopup(createPopupContent(school, userCoords))
+                    .addTo(markersGroup);
+                
+                // Сохраняем ссылку на первую (ближайшую) школу
+                if (index === 0) {
+                    selectedSchoolMarker = marker;
+                    // Автоматически выбираем и подсвечиваем ближайшую школу
+                    setTimeout(() => {
+                        selectSchool(school, userCoords);
+                    }, 500);
+                }
+                
+                marker.on('click', function() {
+                    selectSchool(school, userCoords);
+                });
+            });
+            
+            // Если есть координаты пользователя, добавляем маркер
+            if (userCoords) {
+                const userIcon = L.divIcon({
+                    className: 'user-marker',
+                    html: '<div style="background: #28a745; color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">🏠</div>',
+                    iconSize: [25, 25],
+                    iconAnchor: [12, 12]
+                });
+                
+                userAddressMarker = L.marker([userCoords.lat, userCoords.lng], { icon: userIcon })
+                    .bindPopup('<strong>Ваш адрес</strong>')
+                    .addTo(markersGroup);
+            }
+            
+            // Подгоняем карту под все маркеры
+            if (markersGroup.getLayers().length > 0) {
+                const group = new L.featureGroup(markersGroup.getLayers());
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+        function selectSchool(school, userCoords) {
+            // Убираем предыдущую линию расстояния
+            if (distanceLine) {
+                map.removeLayer(distanceLine);
+            }
+            
+            // Если есть координаты пользователя, рисуем линию
+            if (userCoords) {
+                distanceLine = L.polyline([
+                    [userCoords.lat, userCoords.lng],
+                    [school.lat, school.lng]
+                ], {
+                    color: '#dc3545',
+                    weight: 3,
+                    opacity: 0.7,
+                    dashArray: '10, 10'
+                }).addTo(map);
+            }
+            
+            // Обновляем отображение списка школ с выделением выбранной
+            displaySchoolDetails(currentSchools, userCoords, school.id);
+        }
+
+        function createPopupContent(school, userCoords = null) {
+            const languages = school.languages.map(lang => {
+                const langMap = {
+                    'serbian': 'Српски',
+                    'hungarian': 'Мађарски',
+                    'slovak': 'Словачки',
+                    'multilingual': 'Вишејезична'
+                };
+                return langMap[lang] || lang;
+            }).join(', ');
+            
+            let distanceText = '';
+            if (userCoords) {
+                const distance = calculateDistance(userCoords, { lat: school.lat, lng: school.lng });
+                distanceText = `<p><strong>Удаљеност:</strong> ${distance.toFixed(1)} км</p>`;
+            }
+            
+            return `
+                <div>
+                    <h4>${school.name}</h4>
+                    <p><strong>Адреса:</strong> ${school.address}</p>
+                    <p><strong>Језици:</strong> ${languages}</p>
+                    ${distanceText}
+                    <p><strong>Телефон:</strong> ${school.phone}</p>
+                </div>
+            `;
+        }
+
+        // Функция для вычисления расстояния между двумя точками
+        function calculateDistance(point1, point2) {
+            const R = 6371; // Радиус Земли в км
+            const dLat = (point2.lat - point1.lat) * Math.PI / 180;
+            const dLng = (point2.lng - point1.lng) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(point1.lat * Math.PI / 180) * Math.cos(point2.lat * Math.PI / 180) *
+                    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // Симуляция геокодинга адреса
+        function geocodeAddress(address) {
+            // В реальном приложении здесь был бы вызов Nominatim API или другого геокодинг сервиса
+            // Для демонстрации используем случайные координаты в пределах Нови Сада
+            const novSadBounds = {
+                north: 45.290,
+                south: 45.230,
+                east: 19.870,
+                west: 19.800
+            };
+            
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const lat = novSadBounds.south + Math.random() * (novSadBounds.north - novSadBounds.south);
+                    const lng = novSadBounds.west + Math.random() * (novSadBounds.east - novSadBounds.west);
+                    resolve({ lat, lng, address });
+                }, 800);
+            });
+        }
+
+        function searchSchools() {
+            const address = document.getElementById('addressSearch').value.trim();
+            if (!address) {
+                alert('Молимо унесите адресу за претрагу');
+                return;
+            }
+            
+            document.getElementById('schoolResults').innerHTML = '<div class="loading">Претрага адресе и најближих школа...</div>';
+            
+            // Сначала геокодируем адрес
+            geocodeAddress(address).then(userCoords => {
+                // Фильтруем школы по выбранным фильтрам
+                let filteredSchools = filterSchools(schoolsData);
+                
+                // Вычисляем расстояния и сортируем по близости
+                filteredSchools = filteredSchools.map(school => ({
+                    ...school,
+                    distance: calculateDistance(userCoords, { lat: school.lat, lng: school.lng })
+                })).sort((a, b) => a.distance - b.distance);
+                
+                currentSchools = filteredSchools;
+                
+                displaySchoolDetails(filteredSchools, userCoords);
+                displaySchoolsOnMap(filteredSchools, userCoords);
+            });
+        }
+
+        function filterSchools(schools) {
+            const languageFilter = document.getElementById('languageFilter').value;
+            const typeFilter = document.getElementById('schoolTypeFilter').value;
+            
+            return schools.filter(school => {
+                if (languageFilter && !school.languages.includes(languageFilter)) {
+                    return false;
+                }
+                if (typeFilter && school.type !== typeFilter) {
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        function displaySchoolDetails(schools, userCoords = null, highlightSchoolId = null) {
+            const resultsContainer = document.getElementById('schoolResults');
+            
+            if (schools.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">Нема пронађених школа која одговарајуса изабраним критеријумима.</div>';
+                return;
+            }
+            
+            let addressInfo = '';
+            if (userCoords) {
+                addressInfo = `<div class="address-marker-info">📍 Ваша адреса: ${userCoords.address}</div>`;
+            }
+            
+            const schoolsHTML = schools.map((school, index) => {
+                const languageTags = school.languages.map(lang => {
+                    const langMap = {
+                        'serbian': 'Српски',
+                        'hungarian': 'Мађарски',
+                        'slovak': 'Словачки',
+                        'multilingual': 'Вишејезична'
+                    };
+                    return `<span class="language-tag">${langMap[lang] || lang}</span>`;
+                }).join('');
+                
+                let distanceInfo = '';
+                if (school.distance !== undefined) {
+                    distanceInfo = `<div class="school-distance">📏 ${school.distance.toFixed(1)} км од ваше адресе</div>`;
+                }
+                
+                const isHighlighted = highlightSchoolId === school.id;
+                const cardClass = isHighlighted ? 'school-card highlighted' : 'school-card';
+                const orderBadge = index === 0 ? '🥇 ' : index === 1 ? '🥈 ' : index === 2 ? '🥉 ' : `${index + 1}. `;
+                
+                return `
+                    <div class="${cardClass}" onclick="selectSchoolFromList(${school.id})" style="cursor: pointer;">
+                        <div class="school-name">${orderBadge}${school.name}</div>
+                        <div class="school-address">📍 ${school.address}</div>
+                        ${distanceInfo}
+                        <div class="school-languages">${languageTags}</div>
+                        <div class="school-contacts">
+                            <a href="tel:${school.phone}" class="contact-link" onclick="event.stopPropagation()">📞 ${school.phone}</a>
+                            <a href="mailto:${school.email}" class="contact-link" onclick="event.stopPropagation()">✉️ Почта</a>
+                            <a href="${school.website}" target="_blank" class="contact-link" onclick="event.stopPropagation()">🌐 Сајт</a>
+                            <a href="${school.telegram}" target="_blank" class="contact-link" onclick="event.stopPropagation()">📱 Telegram</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            resultsContainer.innerHTML = addressInfo + schoolsHTML;
+        }
+
+        function selectSchoolFromList(schoolId) {
+            const school = currentSchools.find(s => s.id === schoolId);
+            if (school && userAddressMarker) {
+                const userCoords = {
+                    lat: userAddressMarker.getLatLng().lat,
+                    lng: userAddressMarker.getLatLng().lng,
+                    address: userAddressMarker.getPopup().getContent().replace('<strong>Ваш адрес</strong>', '')
+                };
+                selectSchool(school, userCoords);
+                
+                // Центрируем карту на выбранной школе
+                map.setView([school.lat, school.lng], 15);
+            }
+        }
+
+        function toggleFilters() {
+            const filters = document.getElementById('filters');
+            filters.style.display = filters.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function showTab(tabName) {
+            // Скрываем все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убираем активный класс со всех кнопок
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Показываем выбранную вкладку
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'documents') {
+                loadDocuments();
+            }
+        }
+
+        function loadDocuments() {
+            const grid = document.getElementById('documentsGrid');
+            
+            const documentsHTML = documentsData.map(doc => `
+                <div class="document-card">
+                    <div class="document-title">${doc.title}</div>
+                    <div class="document-meta">
+                        ${doc.type} • ${doc.size} • Ажурирано: ${doc.date}
+                    </div>
+                    <p style="color: #666; margin-bottom: 1rem; font-size: 0.95rem;">${doc.description}</p>
+                    <div class="document-actions">
+                        <button class="btn-download" onclick="downloadDocument('${doc.title}')">⬇️ Скачај</button>
+                        <button class="btn-view" onclick="viewDocument('${doc.title}')">👁️ Отвори</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            grid.innerHTML = documentsHTML;
+        }
+
+        function downloadDocument(title) {
+            // Симуляция скачивания
+            alert(`Започиње преузимање документа: ${title}`);
+        }
+
+        function viewDocument(title) {
+            // Симуляция просмотра
+            alert(`Отварање документа: ${title}`);
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+            
+            // Обработчик Enter для поиска
+            document.getElementById('addressSearch').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchSchools();
+                }
+            });
+            
+            // Обработчики фильтров
+            document.getElementById('languageFilter').addEventListener('change', function() {
+                if (document.getElementById('addressSearch').value.trim()) {
+                    searchSchools();
+                }
+            });
+            
+            document.getElementById('schoolTypeFilter').addEventListener('change', function() {
+                if (document.getElementById('addressSearch').value.trim()) {
+                    searchSchools();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
