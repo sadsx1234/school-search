@@ -526,16 +526,16 @@
 
                 const result = await response.json();
 
-                if (result.status === 'Accepted' && result.data && result.data.schools) {
-                    currentSchools = result.data.schools; 
-                    const userCoords = result.data.user_coords;
-                    const filteredSchools = filterSchools(currentSchools);
+                if (result.status === 'success' && result.data && result.data.schools) {
+    currentSchools = result.data.schools; 
+    const userCoords = result.data.user_coords;
+    const filteredSchools = filterSchools(currentSchools);
 
-                    displaySchoolDetails(filteredSchools, userCoords);
-                    displaySchoolsOnMap(filteredSchools, userCoords);
-                } else {
-                    resultsContainer.innerHTML = '<div class="no-results">Не удалось найти школы по этому адресу. Проверьте адрес или попробуйте еще раз.</div>';
-                }
+    displaySchoolDetails(filteredSchools, userCoords);
+    displaySchoolsOnMap(filteredSchools, userCoords);
+} else {
+    resultsContainer.innerHTML = '<div class="no-results">Не удалось найти школы по этому адресу. Проверьте адрес или попробуйте еще раз.</div>';
+}
 
             } catch (error) {
                 console.error('Ошибка при обращении к Make:', error);
