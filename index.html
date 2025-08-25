@@ -490,9 +490,9 @@
             userAddressMarker = null;
 
             try {
-                // Отправляем POST-запрос с адресом в теле
+                // Отправляем GET-запрос с адресом в теле
                 const response = await fetch(MAKE_WEBHOOK_URL, {
-                    method: 'POST',
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
                     },
