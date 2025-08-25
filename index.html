@@ -622,7 +622,7 @@
                     iconAnchor: [15, 15]
                 });
                 
-                const marker = L.marker([school.lat, school.lng], { icon: schoolIcon })
+                const marker = L.marker([cleanLat, cleanLng], { icon: schoolIcon })
                     .bindPopup(createPopupContent(school, userCoords))
                     .addTo(markersGroup);
                 
@@ -665,7 +665,7 @@
             if (userCoords) {
                 distanceLine = L.polyline([
                     [userCoords.lat, userCoords.lng],
-                    [school.lat, school.lng]
+                    [cleanLat, cleanLng]
                 ], {
                     color: '#dc3545',
                     weight: 3,
@@ -709,7 +709,7 @@
             const userCoords = userAddressMarker ? { lat: userAddressMarker.getLatLng().lat, lng: userAddressMarker.getLatLng().lng } : null;
             if (school && userCoords) {
                 selectSchool(school, userCoords);
-                map.setView([school.lat, school.lng], 15);
+                map.setView([cleanLat, cleanLng], 15);
             }
         }
 
