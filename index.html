@@ -704,10 +704,10 @@
         function selectSchoolFromList(schoolId) {
             const school = currentSchools.find(s => s.id === schoolId);
             const userCoords = userAddressMarker ? { lat: userAddressMarker.getLatLng().lat, lng: userAddressMarker.getLatLng().lng } : null;
-            if (school && userCoords) {
-                selectSchool(school, userCoords);
-                map.setView([cleanLat, cleanLng], 15);
-            }
+if (school && userCoords) {
+    selectSchool(school, userCoords);
+    map.setView([school.lat, school.lng], 15); // <-- Исправлено
+}
         }
 
         function toggleFilters() {
