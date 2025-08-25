@@ -478,8 +478,8 @@
         async function searchSchools() {
             const addressSearch = document.getElementById('addressSearch').value.trim();
             if (!addressSearch) {
-                alert('Пожалуйста, введите адрес для поиска');
-                return;
+    alert('Пожалуйста, введите адрес для поиска');
+    return;
             }
 
             document.getElementById('schoolResults').innerHTML = '<div class="loading">Поиск адреса и ближайших школ...</div>';
