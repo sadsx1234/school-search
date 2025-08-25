@@ -420,7 +420,7 @@
                     <div id="filters" class="filters" style="display: none;">
                         <select class="filter-select" id="languageFilter">
                             <option value="">Все языки обучения</option>
-                            <option value="serbian">Сербский</option>
+                            <option value="serbian">Русский</option>
                             <option value="hungarian">Венгерский</option>
                             <option value="slovak">Словацкий</option>
                             <option value="multilingual">Многоязычная</option>
@@ -474,8 +474,8 @@
         const schoolsData = [
             {
                 id: 1,
-                name: 'ОШ "Жарко Зрењанин"',
-                address: 'Булевар Михајла Пупина 6, Нови Сад',
+                name: 'ОШ "Жарко Зренянин"',
+                address: 'Бульвар Михайла Пупина 6, Нови-Сад',
                 lat: 45.2671,
                 lng: 19.8335,
                 languages: ['serbian'],
@@ -487,8 +487,8 @@
             },
             {
                 id: 2,
-                name: 'ОШ "Браћа Рибар"',
-                address: 'Булевар ослобођења 24, Нови Сад',
+                name: 'ОШ "Братья Рыбар"',
+                address: 'Бульвар освобождения 24, Нови-Сад',
                 lat: 45.2396,
                 lng: 19.8227,
                 languages: ['serbian'],
@@ -500,8 +500,8 @@
             },
             {
                 id: 3,
-                name: 'ОШ "Светозар Милетић"',
-                address: 'Фрушкогорска 17, Нови Сад',
+                name: 'ОШ "Светозар Милетич"',
+                address: 'Фрушкогорская 17, Нови-Сад',
                 lat: 45.2525,
                 lng: 19.8515,
                 languages: ['serbian'],
@@ -513,8 +513,8 @@
             },
             {
                 id: 4,
-                name: 'ОШ "Sonja Marinković"',
-                address: 'Народног фронта 25, Нови Сад',
+                name: 'ОШ "Соня Маринкович"',
+                address: 'Народного фронта 25, Нови-Сад',
                 lat: 45.2444,
                 lng: 19.8156,
                 languages: ['hungarian'],
@@ -526,8 +526,8 @@
             },
             {
                 id: 5,
-                name: 'Гимназија "Исидора Секулић"',
-                address: 'Змај Јовина 4, Нови Сад',
+                name: 'Гимназия "Исидора Секулич"',
+                address: 'Змай Йовина 4, Нови-Сад',
                 lat: 45.2554,
                 lng: 19.8448,
                 languages: ['serbian', 'multilingual'],
@@ -539,8 +539,8 @@
             },
             {
                 id: 6,
-                name: 'Техничка школа "Милева Марић"',
-                address: 'Хајдук Вељкова 10, Нови Сад',
+                name: 'Техническая школа "Милева Марич"',
+                address: 'Хайдук Велькова 10, Нови-Сад',
                 lat: 45.2611,
                 lng: 19.8372,
                 languages: ['serbian'],
@@ -693,10 +693,10 @@
         function createPopupContent(school, userCoords = null) {
             const languages = school.languages.map(lang => {
                 const langMap = {
-                    'serbian': 'Српски',
-                    'hungarian': 'Мађарски',
-                    'slovak': 'Словачки',
-                    'multilingual': 'Вишејезична'
+                    'serbian': 'Русский',
+                    'hungarian': 'Венгерский',
+                    'slovak': 'Словацкий',
+                    'multilingual': 'Многоязычная'
                 };
                 return langMap[lang] || lang;
             }).join(', ');
@@ -704,14 +704,14 @@
             let distanceText = '';
             if (userCoords) {
                 const distance = calculateDistance(userCoords, { lat: school.lat, lng: school.lng });
-                distanceText = `<p><strong>Удаљеност:</strong> ${distance.toFixed(1)} км</p>`;
+                distanceText = `<p><strong>Расстояние:</strong> ${distance.toFixed(1)} км</p>`;
             }
             
             return `
                 <div>
                     <h4>${school.name}</h4>
-                    <p><strong>Адреса:</strong> ${school.address}</p>
-                    <p><strong>Језици:</strong> ${languages}</p>
+                    <p><strong>Адрес:</strong> ${school.address}</p>
+                    <p><strong>Языки:</strong> ${languages}</p>
                     ${distanceText}
                     <p><strong>Телефон:</strong> ${school.phone}</p>
                 </div>
@@ -753,11 +753,11 @@
         function searchSchools() {
             const address = document.getElementById('addressSearch').value.trim();
             if (!address) {
-                alert('Молимо унесите адресу за претрагу');
+                alert('Пожалуйста введите адрес для поиска');
                 return;
             }
             
-            document.getElementById('schoolResults').innerHTML = '<div class="loading">Претрага адресе и најближих школа...</div>';
+            document.getElementById('schoolResults').innerHTML = '<div class="loading">Поиск адреса и ближайших школ...</div>';
             
             // Сначала геокодируем адрес
             geocodeAddress(address).then(userCoords => {
@@ -796,29 +796,29 @@
             const resultsContainer = document.getElementById('schoolResults');
             
             if (schools.length === 0) {
-                resultsContainer.innerHTML = '<div class="no-results">Нема пронађених школа која одговарајуса изабраним критеријумима.</div>';
+                resultsContainer.innerHTML = '<div class="no-results">Не найдено школ, соответствующих выбранным критериям.</div>';
                 return;
             }
             
             let addressInfo = '';
             if (userCoords) {
-                addressInfo = `<div class="address-marker-info">📍 Ваша адреса: ${userCoords.address}</div>`;
+                addressInfo = `<div class="address-marker-info">📍 Ваш адрес: ${userCoords.address}</div>`;
             }
             
             const schoolsHTML = schools.map((school, index) => {
                 const languageTags = school.languages.map(lang => {
                     const langMap = {
-                        'serbian': 'Српски',
-                        'hungarian': 'Мађарски',
-                        'slovak': 'Словачки',
-                        'multilingual': 'Вишејезична'
+                        'serbian': 'Русский',
+                        'hungarian': 'Венгерский',
+                        'slovak': 'Словацкий',
+                        'multilingual': 'Многоязычная'
                     };
                     return `<span class="language-tag">${langMap[lang] || lang}</span>`;
                 }).join('');
                 
                 let distanceInfo = '';
                 if (school.distance !== undefined) {
-                    distanceInfo = `<div class="school-distance">📏 ${school.distance.toFixed(1)} км од ваше адресе</div>`;
+                    distanceInfo = `<div class="school-distance">📏 ${school.distance.toFixed(1)} км от вашего адреса</div>`;
                 }
                 
                 const isHighlighted = highlightSchoolId === school.id;
@@ -834,7 +834,7 @@
                         <div class="school-contacts">
                             <a href="tel:${school.phone}" class="contact-link" onclick="event.stopPropagation()">📞 ${school.phone}</a>
                             <a href="mailto:${school.email}" class="contact-link" onclick="event.stopPropagation()">✉️ Почта</a>
-                            <a href="${school.website}" target="_blank" class="contact-link" onclick="event.stopPropagation()">🌐 Сајт</a>
+                            <a href="${school.website}" target="_blank" class="contact-link" onclick="event.stopPropagation()">🌐 Сайт</a>
                             <a href="${school.telegram}" target="_blank" class="contact-link" onclick="event.stopPropagation()">📱 Telegram</a>
                         </div>
                     </div>
