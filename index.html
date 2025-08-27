@@ -167,7 +167,7 @@
             padding: 1.5rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.07);
             overflow-y: auto;
-            position: relative; /* Добавлено */
+            position: relative;
         }
 
         .results-header {
@@ -492,6 +492,14 @@
         const MAKE_WEBHOOK_URL = 'https://hook.eu2.make.com/jjy9e9hfgtgalaka4zhsupsaehljn7qd';
         let currentSchools = [];
         let map, markersGroup, userAddressMarker, selectedSchoolMarker, distanceLine;
+        
+        const allSchools = [
+            { id: 1, name: 'ОШ "ВАСА СТАЈИЋ"', lat: 45.2505, lng: 19.8329, address: 'Улица Стевана Сремца 1', languages: ['serbian', 'hungarian'], type: 'elementary', phone: '+38121422736', email: 'osvasastajic@eunet.rs', website: 'http://osvasastajic.edu.rs', telegram: 'https://t.me/osvasastajic' },
+            { id: 2, name: 'ОШ "ДУШАН РАДОВИЋ"', lat: 45.2478, lng: 19.8271, address: 'Булевар Ослобођења 26', languages: ['serbian', 'slovak'], type: 'elementary', phone: '+38121421041', email: 'osdusanradovic@eunet.rs', website: 'http://osdusanradovic.edu.rs', telegram: 'https://t.me/osdusanradovic' },
+            { id: 3, name: 'ОШ "ЈОВАН ПОПОВИЋ"', lat: 45.2458, lng: 19.8256, address: 'Народног фронта 2', languages: ['serbian'], type: 'elementary', phone: '+38121421255', email: 'osjovanpopovic@eunet.rs', website: 'http://osjovanpopovic.edu.rs', telegram: 'https://t.me/osjovanpopovic' },
+            { id: 4, name: 'ОШ "МАРИЈА МИЛУТИНОВИЋ"', lat: 45.2520, lng: 19.8400, address: 'Улица Марије Милутиновић 5', languages: ['serbian', 'multilingual'], type: 'elementary', phone: '+38121423123', email: 'osmarijamilutinovic@eunet.rs', website: 'http://osmarijamilutinovic.edu.rs', telegram: 'https://t.me/osmarijamilutinovic' },
+            { id: 5, name: 'ОШ "ПЕТАР ПЕТРОВИЋ ЊЕГОШ"', lat: 45.2566, lng: 19.8450, address: 'Булевар Цара Лазара 1', languages: ['serbian', 'hungarian'], type: 'elementary', phone: '+38121543210', email: 'osppnjegos@eunet.rs', website: 'http://osppnjegos.edu.rs', telegram: 'https://t.me/osppnjegos' }
+        ];
 
         function initMap() {
             map = L.map('map').setView([45.2458, 19.8256], 12);
@@ -500,9 +508,25 @@
             }).addTo(map);
             
             markersGroup = L.layerGroup().addTo(map);
+            displayAllSchools();
         }
 
-        // --- Основная функция, которая теперь работает с Make и лоудером ---
+        function displayAllSchools() {
+            markersGroup.clearLayers();
+            allSchools.forEach(school => {
+                const marker = L.marker([school.lat, school.lng]).addTo(markersGroup)
+                    .bindPopup(createPopupContent(school));
+                
+                marker.on('click', function() {
+                    displaySchoolDetails(allSchools, null, school.id);
+                });
+            });
+            if (markersGroup.getLayers().length > 0) {
+                const group = new L.featureGroup(markersGroup.getLayers());
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
         async function searchSchools() {
             const addressSearch = document.getElementById('addressSearch').value.trim();
             if (!addressSearch) {
@@ -511,12 +535,10 @@
             }
 
             const resultsContainer = document.getElementById('schoolResults');
-            resultsContainer.innerHTML = '<div class="loader-container"><div class="loader"></div></div>'; // Показываем лоудер
+            resultsContainer.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
             
-            markersGroup.clearLayers();
             if (distanceLine) map.removeLayer(distanceLine);
-            userAddressMarker = null;
-
+            
             try {
                 const response = await fetch(`${MAKE_WEBHOOK_URL}?address=${encodeURIComponent(addressSearch)}`);
 
@@ -527,36 +549,62 @@
                 const result = await response.json();
 
                 if (result.status === 'success' && result.data && result.data.schools) {
-    currentSchools = result.data.schools; 
-    const userCoords = result.data.user_coords;
-    const filteredSchools = filterSchools(currentSchools);
+                    const foundSchool = result.data.schools[0];
+                    const userCoords = result.data.user_coords;
+                    
+                    const distance = calculateDistance(userCoords.lat, userCoords.lng, foundSchool.lat, foundSchool.lng);
+                    foundSchool.distance = distance;
 
-    displaySchoolDetails(filteredSchools, userCoords);
-    displaySchoolsOnMap(filteredSchools, userCoords);
-} else {
-    resultsContainer.innerHTML = '<div class="no-results">Не удалось найти школы по этому адресу. Проверьте адрес или попробуйте еще раз.</div>';
-}
+                    displaySchoolDetails([foundSchool], userCoords, foundSchool.id);
+                    highlightSchool(foundSchool, userCoords);
+                } else {
+                    resultsContainer.innerHTML = '<div class="no-results">Не удалось найти школы по этому адресу. Проверьте адрес или попробуйте еще раз.</div>';
+                }
 
             } catch (error) {
                 console.error('Ошибка при обращении к Make:', error);
                 resultsContainer.innerHTML = '<div class="no-results">Произошла ошибка при поиске. Пожалуйста, попробуйте еще раз.</div>';
             }
         }
-        // -----------------------------------------------------------------
 
-        function filterSchools(schools) {
-            const languageFilter = document.getElementById('languageFilter').value;
-            const typeFilter = document.getElementById('schoolTypeFilter').value;
+        function highlightSchool(school, userCoords) {
+            markersGroup.clearLayers();
             
-            return schools.filter(school => {
-                if (languageFilter && !school.languages.includes(languageFilter)) {
-                    return false;
-                }
-                if (typeFilter && school.type !== typeFilter) {
-                    return false;
-                }
-                return true;
+            allSchools.forEach(s => {
+                const isFoundSchool = s.id === school.id;
+                const markerIcon = L.divIcon({
+                    className: 'school-marker',
+                    html: `<div style="background: ${isFoundSchool ? '#dc3545' : '#667eea'}; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">${allSchools.findIndex(sch => sch.id === s.id) + 1}</div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                L.marker([s.lat, s.lng], { icon: markerIcon })
+                    .bindPopup(createPopupContent(s, isFoundSchool ? userCoords : null))
+                    .addTo(markersGroup);
             });
+            
+            userAddressMarker = L.marker([userCoords.lat, userCoords.lng], {
+                icon: L.divIcon({
+                    className: 'user-marker',
+                    html: '<div style="background: #28a745; color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">🏠</div>',
+                    iconSize: [25, 25],
+                    iconAnchor: [12, 12]
+                })
+            }).bindPopup(`<strong>Ваш адрес:</strong> ${userCoords.address}`).addTo(markersGroup);
+            
+            if (distanceLine) map.removeLayer(distanceLine);
+            distanceLine = L.polyline([
+                [userCoords.lat, userCoords.lng],
+                [school.lat, school.lng]
+            ], {
+                color: '#dc3545',
+                weight: 3,
+                opacity: 0.7,
+                dashArray: '10, 10'
+            }).addTo(map);
+
+            map.setView([userCoords.lat, userCoords.lng], 14);
         }
 
         function displaySchoolDetails(schools, userCoords = null, highlightSchoolId = null) {
@@ -572,14 +620,16 @@
                 addressInfo = `<div class="address-marker-info">📍 Ваш адрес: ${userCoords.address}</div>`;
             }
             
-            const schoolsHTML = schools.map((school, index) => {
+            const schoolsHTML = schools.map((school) => {
                 const langMap = {
-                    'serbian': 'Сербский', // Заменил "Русский" на "Сербский"
+                    'serbian': 'Сербский',
                     'hungarian': 'Венгерский',
                     'slovak': 'Словацкий',
                     'multilingual': 'Многоязычная'
                 };
-                const languageTags = school.languages.map(lang => {
+                // Убедимся, что languages - это массив
+                const languages = Array.isArray(school.languages) ? school.languages : [school.languages];
+                const languageTags = languages.map(lang => {
                     return `<span class="language-tag">${langMap[lang] || lang}</span>`;
                 }).join('');
                 
@@ -590,11 +640,10 @@
                 
                 const isHighlighted = highlightSchoolId === school.id;
                 const cardClass = isHighlighted ? 'school-card highlighted' : 'school-card';
-                const orderBadge = index === 0 ? '🥇 ' : index === 1 ? '🥈 ' : index === 2 ? '🥉 ' : `${index + 1}. `;
                 
                 return `
                     <div class="${cardClass}" onclick="selectSchoolFromList(${school.id})" style="cursor: pointer;">
-                        <div class="school-name">${orderBadge}${school.name}</div>
+                        <div class="school-name">${school.name}</div>
                         <div class="school-address">📍 ${school.address}</div>
                         ${distanceInfo}
                         <div class="school-languages">${languageTags}</div>
@@ -611,90 +660,27 @@
             resultsContainer.innerHTML = addressInfo + schoolsHTML;
         }
 
-        function displaySchoolsOnMap(schools, userCoords = null) {
-            markersGroup.clearLayers();
-            
-            schools.forEach((school, index) => {
-                const schoolIcon = L.divIcon({
-                    className: 'school-marker',
-                    html: `<div style="background: ${index === 0 ? '#dc3545' : '#667eea'}; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">${index + 1}</div>`,
-                    iconSize: [30, 30],
-                    iconAnchor: [15, 15]
-                });
-                
-               const marker = L.marker([school.lat, school.lng], { icon: schoolIcon })
-                    .bindPopup(createPopupContent(school, userCoords))
-                    .addTo(markersGroup);
-                
-                if (index === 0) {
-                    selectedSchoolMarker = marker;
-                    setTimeout(() => {
-                        selectSchool(school, userCoords);
-                    }, 500);
-                }
-                
-                marker.on('click', function() {
-                    selectSchool(school, userCoords);
-                });
-            });
-            
-            if (userCoords) {
-                const userIcon = L.divIcon({
-                    className: 'user-marker',
-                    html: '<div style="background: #28a745; color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">🏠</div>',
-                    iconSize: [25, 25],
-                    iconAnchor: [12, 12]
-                });
-                
-                userAddressMarker = L.marker([userCoords.lat, userCoords.lng], { icon: userIcon })
-                    .bindPopup(`<strong>Ваш адрес:</strong> ${userCoords.address}`)
-                    .addTo(markersGroup);
-            }
-            
-            if (markersGroup.getLayers().length > 0) {
-                const group = new L.featureGroup(markersGroup.getLayers());
-                map.fitBounds(group.getBounds().pad(0.1));
-            }
-        }
-
-        function selectSchool(school, userCoords) {
-            if (distanceLine) {
-                map.removeLayer(distanceLine);
-            }
-            
-            if (userCoords) {
-    distanceLine = L.polyline([
-        [userCoords.lat, userCoords.lng],
-        [school.lat, school.lng] // <-- Исправлено
-    ], {
-        // ...
-    }).addTo(map);
-}
-            
-            displaySchoolDetails(currentSchools, userCoords, school.id);
-        }
-
         function createPopupContent(school, userCoords = null) {
-            const languages = school.languages.map(lang => {
-                const langMap = {
-                    'serbian': 'Сербский',
-                    'hungarian': 'Венгерский',
-                    'slovak': 'Словацкий',
-                    'multilingual': 'Многоязычная'
-                };
-                return langMap[lang] || lang;
-            }).join(', ');
+            const languages = Array.isArray(school.languages) ? school.languages : [school.languages];
+            const langMap = {
+                'serbian': 'Сербский',
+                'hungarian': 'Венгерский',
+                'slovak': 'Словацкий',
+                'multilingual': 'Многоязычная'
+            };
+            const languagesText = languages.map(lang => langMap[lang] || lang).join(', ');
             
             let distanceText = '';
-            if (school.distance !== undefined) {
-                distanceText = `<p><strong>Расстояние:</strong> ${school.distance.toFixed(1)} км</p>`;
+            if (userCoords) {
+                const distance = calculateDistance(userCoords.lat, userCoords.lng, school.lat, school.lng);
+                distanceText = `<p><strong>Расстояние:</strong> ${distance.toFixed(1)} км</p>`;
             }
             
             return `
                 <div>
                     <h4>${school.name}</h4>
                     <p><strong>Адрес:</strong> ${school.address}</p>
-                    <p><strong>Языки:</strong> ${languages}</p>
+                    <p><strong>Языки:</strong> ${languagesText}</p>
                     ${distanceText}
                     <p><strong>Телефон:</strong> ${school.phone}</p>
                 </div>
@@ -702,12 +688,24 @@
         }
 
         function selectSchoolFromList(schoolId) {
-            const school = currentSchools.find(s => s.id === schoolId);
+            const school = allSchools.find(s => s.id === schoolId);
             const userCoords = userAddressMarker ? { lat: userAddressMarker.getLatLng().lat, lng: userAddressMarker.getLatLng().lng } : null;
-if (school && userCoords) {
-    selectSchool(school, userCoords);
-    map.setView([school.lat, school.lng], 15); // <-- Исправлено
-}
+            if (school && userCoords) {
+                highlightSchool(school, userCoords);
+                displaySchoolDetails([school], userCoords, school.id);
+            }
+        }
+        
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Радиус Земли в км
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const d = R * c;
+            return d;
         }
 
         function toggleFilters() {
