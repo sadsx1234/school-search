@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -487,52 +487,52 @@
         let currentSchools = [];
         let map, markersGroup, userAddressMarker, selectedSchoolMarker, distanceLine;
 
-      const allSchools = [
-            { id: 1, name: 'ОШ "ЈОВАН ДУЧИЋ"', nameLatin: 'OŠ "JOVAN DUČIĆ"', city: 'Петроварадин', address: 'Прерадовићева 6', languages: ['serbian'], phone: '021/6433-201', email: 'jducic@eunet.rs', type: 'ОШ', lat: 45.2518974, lng: 19.8720619, telegram: '', website: 'https://www.osjducic.edu.rs/' },
-            { id: 2, name: 'ОШ "ВЕЉКО ПЕТРОВИЋ"', nameLatin: 'OŠ "VELJKO PETROVIĆ"', city: 'Бегеч', address: 'Краља Петра I 36', languages: ['serbian'], phone: '021/2998-009', email: 'begso@open.telekom.rs', type: 'ОШ', lat: 45.2357199, lng: 19.6183112, telegram: '', website: 'https://skolevojvodine.vojvodina.gov.rs/' },
-            { id: 3, name: 'ОШ "АЛЕКСА ШАНТИЋ"', nameLatin: 'OŠ "ALEKSA ŠANTIĆ"', city: 'Степановићево', address: 'Војводе Путника 6', languages: ['serbian'], phone: '021/717-055', email: 'aleksastep@mts.rs', type: 'ОШ', lat: 45.4144056, lng: 19.7002576, telegram: '', website: 'https://www.osaleksasantic.edu.rs/' },
-            { id: 4, name: 'ОШ "МИРОСЛАВ АНТИЋ"', nameLatin: 'OŠ "MIROSLAV ANTIĆ"', city: 'Футог', address: 'Раде Кончара 2', languages: ['serbian'], phone: '021/2992-268', email: 'pedagogantic@gmail.com', type: 'ОШ', lat: 45.2400607, lng: 19.7294994, telegram: '', website: 'https://osmiroslavanticfutog.edu.rs' },
-            { id: 5, name: 'ОШ "ДЕСАНКА МАКСИМОВИЋ"', nameLatin: 'OŠ "DESANKA MAKSIMOVIĆ"', city: 'Футог', address: 'Царице Милице 1', languages: ['serbian'], phone: '021 89 52 43', email: 'desanka@neobee.net', type: 'ОШ', lat: 45.2363532, lng: 19.6996142, telegram: '', website: 'https://osdesankamaksimovics.edu.rs' },
-            { id: 6, name: 'ОШ "ЂУРА ЈАКШИЋ"', nameLatin: 'OŠ "ĐURA JAKŠIĆ"', city: 'Каћ', address: 'Краља Петра I 9', languages: ['serbian'], phone: '021 62 13 015', email: 'jdjuraskolakac@gmail.com', type: 'ОШ', lat: 45.2999451, lng: 19.9406794, telegram: '', website: 'https://skolakac.edu.rs/' },
-            { id: 7, name: 'ОШ "ИВО АНДРИЋ"', nameLatin: 'OŠ "IVO ANDRIĆ"', city: 'Будисава', address: 'Будисава, Школска бр.3', languages: ['serbian', 'hungarian'], phone: '021/719018', email: 'osivoandricbudisava@gmail.com', type: 'ОШ', lat: 45.2793761, lng: 19.9936223, telegram: '', website: 'http://ivoandricbudisava.edu.rs/srlat/' },
-            { id: 8, name: 'ОШ "ЖАРКО ЗРЕЊАНИН"', nameLatin: 'OŠ "ŽARKO ZRENJANIN"', city: 'Нови Сад', address: 'Булевар деспота Стефана 8', languages: ['serbian'], phone: '021 23 65 453', email: 'posta.skole@zarkons.edu.rs', type: 'ОШ', lat: 45.2372916, lng: 19.8363659, telegram: '', website: 'https://zarkons.edu.rs/nastava/raspored-casova/' },
-            { id: 9, name: 'ОШ "СОЊА МАРИНКОВИЋ"', nameLatin: 'OŠ "SONJA MARINKOVIĆ"', city: 'Нови Сад', address: 'Пушкинова 28', languages: ['serbian', 'hungarian'], phone: '021 63 64 787', email: 'ossmnsad@gmail.com', type: 'ОШ', lat: 45.2438061, lng: 19.8335519, telegram: '', website: 'https://sonjamarinkovicns.edu.rs/' },
-            { id: 10, name: 'ОШ "ВЕЉКО ВЛАХОВИЋ"', nameLatin: 'OŠ "VELJKO VLAHOVIĆ"', city: 'Нови Сад Шангај', address: 'Улица VIII број 2', languages: ['serbian'], phone: '021 65 20 142', email: 'osveljkovlahovic@mts.rs', type: 'ОШ', lat: 45.2737501, lng: 19.875365, telegram: '', website: 'https://veljko-vlahovic.edu.rs/' },
-            { id: 11, name: 'ОШ "ЈОВАН ЈОВАНОВИЋ ЗМАЈ"', nameLatin: 'OŠ "JOVAN JOVANOVIĆ ZMAJ"', city: 'Сремска Каменица', address: 'Школска 3', languages: ['serbian'], phone: '021 464 506', email: 'jjzmajkamenica@mts.rs', type: 'ОШ', lat: 45.2250332, lng: 19.8428408, telegram: '', website: 'https://www.zmajevi.rs/index.php' },
-            { id: 12, name: 'ОШ "ЂОРЂЕ НАТОШЕВИЋ"', nameLatin: 'OŠ "ĐORĐE NATOŠEVIĆ"', city: 'Нови Сад', address: 'Максима Горког 54', languages: ['serbian'], phone: '021 66 12 957', email: 'djnatos@gmail.com', type: 'ОШ', lat: 45.2513464, lng: 19.853646, telegram: '', website: 'https://www.djordje-natosevic.edu.rs/index.php' },
-            { id: 13, name: 'ОШ "ЂУРА ДАНИЋИЋ"', nameLatin: 'OŠ "ĐURA DANIČIĆ"', city: 'Нови Сад', address: 'Душана Васиљева 19', languages: ['serbian'], phone: '021 45 29 62', email: 'ddanicic@eunet.rs', type: 'ОШ', lat: 45.260885, lng: 19.8530537, telegram: '', website: '' },
-            { id: 14, name: 'ОШ "БРАНКО РАДИЧЕВИЋ"', nameLatin: 'OŠ "BRANKO RADIČEVIĆ"', city: 'Нови Сад', address: 'Футошка 5', languages: ['serbian'], phone: '021 66 22 201', email: 'jbnsbr@neobee.net', type: 'ОШ', lat: 45.2511293, lng: 19.8358227, telegram: '', website: 'http://brankoviosnovci.edu.rs/' },
-            { id: 15, name: 'ОШ "ДОСИТЕЈ ОБРАДОВИЋ"', nameLatin: 'OŠ "DOSITEJ OBRADOVIĆ"', city: 'Нови Сад', address: 'Филипа Филиповића 3', languages: ['serbian'], phone: '021 4774180', email: 'dositejns@mts.rs', type: 'ОШ', lat: 45.2662705, lng: 19.8124141, telegram: 'https://t.me/+9NOphi8lK5pjOTJk', website: 'https://osdositejobradovic.edu.rs' },
-            { id: 16, name: 'ОШ "ДУШАН РАДОВИЋ"', nameLatin: 'OŠ "DUŠAN RADOVIĆ"', city: 'Нови Сад', address: 'Ченејска 61', languages: ['serbian'], phone: '021 41 91 95', email: 'dusanrad.skola@gmail.com', type: 'ОШ', lat: 45.2892255, lng: 19.8265404, telegram: '', website: 'https://www.dusan-radovic.edu.rs/' },
-            { id: 17, name: 'ОШ "ИВАН ГУНДУЛИЋ"', nameLatin: 'OŠ "IVAN GUNDULIĆ"', city: 'Нови Сад', address: 'Гундулићева 9', languages: ['serbian'], phone: '021 551 460', email: 'gundulic@gundulic.edu.rs', type: 'ОШ', lat: 45.2646532, lng: 19.8455816, telegram: '', website: 'https://gundulic.edu.rs/' },
-            { id: 18, name: 'ОШ "ИВО ЛОЛА РИБАР"', nameLatin: 'OŠ "IVO LOLA RIBAR"', city: 'Нови Сад', address: 'Краљевића Марка 2/a', languages: ['serbian'], phone: '021 47 21 772', email: 'skola@ivololaribar.net', type: 'ОШ', lat: 45.2596639, lng: 19.8363329, telegram: 'https://t.me/+IJOGga9rcjFlYWRi', website: 'https://osivololaribar.edu.rs/' },
-            { id: 19, name: 'ОШ "ЈОЖЕФ АТИЛА"', nameLatin: 'OŠ "JOŽEF ATILA"', city: 'Нови Сад', address: 'Шарпланинска 28', languages: ['serbian', 'hungarian'], phone: '021/505-141', email: 'jatila.ns.edu@gmail.com', type: 'ОШ', lat: 45.2375751, lng: 19.8075088, telegram: '', website: 'https://jatila.edu.rs/' },
-            { id: 20, name: 'ОШ "ЈОВАН ПОПОВИЋ"', nameLatin: 'OŠ "JOVAN POPOVIĆ"', city: 'Нови Сад', address: 'Раваничка 2', languages: ['serbian'], phone: '021/450-833', email: 'jpopovicns@yahoo.com', type: 'ОШ', lat: 45.2416792, lng: 19.8453372, telegram: 'https://t.me/+w9p8elAPsLtmN2Ey', website: 'https://www.jovanpopovic.edu.rs/' },
-            { id: 21, name: 'ОШ "КОСТА ТРИФКОВИЋ"', nameLatin: 'OŠ "KOSTA TRIFKOVIĆ"', city: 'Нови Сад', address: 'Берислава Берића 2', languages: ['serbian'], phone: '021/444-063', email: 'skola@kostatrifkovicns.edu.rs', type: 'ОШ', lat: 45.2643036, lng: 19.8359461, telegram: 'https://t.me/+HUc9BU6Ksq1hM2Ey', website: 'https://www.kostatrifkovicns.edu.rs/' },
-            { id: 22, name: 'ОШ "МИЛОШ ЦРЊАНСКИ"', nameLatin: 'OŠ "MILOŠ CRNJANSKI"', city: 'Нови Сад', address: 'Анђе Ранковић 2', languages: ['serbian'], phone: '021/6394-494', email: 'mcrnjanski.mcrnjanski@gmail.com', type: 'ОШ', lat: 45.2475763, lng: 19.7963702, telegram: '', website: 'https://zkv.rs/' },
-            { id: 23, name: 'ОШ "НИКОЛА ТЕСЛА"', nameLatin: 'OŠ "NIKOLA TESLA"', city: 'Нови Сад', address: 'Футошки пут 25/a', languages: ['serbian'], phone: '4790-364', email: 'osnikolate@gmail.com', type: 'ОШ', lat: 45.2473545, lng: 19.8132627, telegram: '', website: 'https://www.osnikolateslans.edu.rs/' },
-            { id: 24, name: 'ОШ "ПЕТЕФИ ШАНДОР"', nameLatin: 'OŠ "PETEFI ŠANDOR"', city: 'Нови Сад', address: 'Боре Продановића 15a', languages: ['serbian', 'hungarian'], phone: '021/547-465', email: 'os.petefi.sekretar@gmail.com', type: 'ОШ', lat: 45.2543348, lng: 19.8294725, telegram: 'https://t.me/novi_sad_petefi_shandor', website: 'http://www.ospetefins.edu.rs/' },
-            { id: 25, name: 'ОШ "ПРВА ВОЈВОЂАНСКА БРИГАДА"', nameLatin: 'OŠ "PRVA VOJVOĐANSKA BRIGADA"', city: 'Нови Сад', address: 'Сељачких буна 51/a', languages: ['serbian'], phone: '021/ 400-540', email: 'prvavojvodjanskabrigada@gmail.com', type: 'ОШ', lat: 45.2540075, lng: 19.79789, telegram: '', website: 'http://www.prvavojvodjanska.edu.rs/' },
-            { id: 26, name: 'ОШ "СВЕТОЗАР МАРКОВИЋ ТОЗА"', nameLatin: 'OŠ "SVETOZAR MARKOVIĆ TOZA"', city: 'Нови Сад', address: 'Јанка Чмелика 89', languages: ['serbian'], phone: '021/512-231', email: 'tozans@sbb.rs', type: 'ОШ', lat: 45.2634034, lng: 19.8088396, telegram: '', website: 'http://www.toza.edu.rs/' },
-            { id: 27, name: 'ОШ "ВАСА СТАЈИЋ"', nameLatin: 'OŠ "VASA STAJIĆ"', city: 'Нови Сад', address: 'Војводе Книћанина 12б', languages: ['serbian'], phone: '021/469-210', email: 'os.vasastajic@mts.rs', type: 'ОШ', lat: 45.2463531, lng: 19.8264626, telegram: 'https://t.me/+uUgp8QhUE4Q3MGY6', website: 'https://www.vstajicns.rs/' },
-            { id: 28, name: 'ОШ "ВУК КАРАЏИЋ"', nameLatin: 'OŠ "VUK KARADŽIĆ"', city: 'Нови Сад', address: 'Радоја Домановића 24', languages: ['serbian'], phone: '021/6339-153', email: 'direktorvukns@mts.rs', type: 'ОШ', lat: 45.2682437, lng: 19.838549, telegram: 'https://t.me/+e-Ty1fzj8_pjZGUy', website: 'http://vukkaradzicns.edu.rs' },
-            { id: 29, name: 'ОШ "СВЕТИ САВА"', nameLatin: 'OŠ "SVETI SAVA"', city: 'Руменка', address: 'Јована Јовановића Змаја 24', languages: ['serbian'], phone: '021/6216016', email: 'nrastko@neobee.net', type: 'ОШ', lat: 45.2525257, lng: 19.8359515, telegram: '', website: 'https://www.svetisavarumenka.edu.rs/' },
-            { id: 30, name: 'ОШ "МИХАЈЛО ПУПИН"', nameLatin: 'OŠ "MIHAJLO PUPIN"', city: 'Ветерник', address: 'Краља Александра 38', languages: ['serbian'], phone: '823-123', email: 'osmihajlopupin@neobee.net', type: 'ОШ', lat: 45.2534169, lng: 19.7553058, telegram: '', website: 'http://www.etspupin.edu.rs/' },
-            { id: 31, name: 'ОШ "22. АВГУСТ"', nameLatin: 'OŠ "22. AVGUST"', city: 'Буковац', address: 'Трг жртава геноцида 1', languages: ['serbian'], phone: '021/826-020', email: 'osbukovac22avgust@mts.rs', type: 'ОШ', lat: 45.1965788, lng: 19.8927475, telegram: '', website: 'http://osnovnaskolabukovac.edu.rs/' },
-            { id: 32, name: 'ОШ "ЉУДОВИТ ШТУР"', nameLatin: 'OŠ "LJUDOVIT ŠTUR"', city: 'Кисач', address: 'Железничка 3', languages: ['serbian', 'slovak'], phone: '021/827-015', email: 'ludovitsturkisac@gmail.com', type: 'ОШ', lat: 45.3563609, lng: 19.7314318, telegram: '', website: 'https://skolaludovitstur.edu.rs/index.php/sr/' },
-            { id: 33, name: 'ОШ "ЛАЗА КОСТИЋ"', nameLatin: 'OŠ "LAZA KOSTIĆ"', city: 'Ковиљ', address: 'Лаза Костић 42', languages: ['serbian'], phone: '021/2988-006', email: 'oslkostic@gmail.com', type: 'ОШ', lat: 45.2252977, lng: 20.0214218, telegram: '', website: '' },
-            { id: 34, name: 'ШКОЛА ЗА ОСНОВНО И СРЕДЊЕ ОБРАЗОВАЊЕ "МИЛАН ПЕТРОВИЋ" СА ДОМОМ УЧЕНИКА', nameLatin: 'ŠKOLA ZA OSNOVNO I SREDNJE OBRAZOVANJE "MILAN PETROVIĆ" SA DOMOM UČENIKA', city: 'Нови Сад', address: 'Браће Рибникара 32', languages: ['serbian', 'slovak'], phone: '6616-366', email: 'skolamp@eunet.rs', type: 'ОШ', lat: 45.2533165, lng: 19.7946746, telegram: '', website: 'https://osmilap.edu.rs' },
-            { id: 35, name: 'ШКОЛА ЗА ОСНОВНО ОБРАЗОВАЊЕ И ВАСПИТАЊЕ ОДРАСЛИХ "СВЕТИ САВА"', nameLatin: 'ŠKOLA ZA OSNOVNO OBRAZOVANJE I VASPITANJE ODRASLIH "SVETI SAVA"', city: 'Нови Сад', address: 'Огњена Прице 7', languages: ['serbian'], phone: '021/547-895', email: 'sv.sava@neobee.net', type: 'ОШ', lat: 45.2525141, lng: 19.836099, telegram: '', website: 'https://osssavans.edu.rs' },
-            { id: 36, name: 'ОСНОВНА МУЗИЧКА ШКОЛА "ЈОСИП СЛАВЕНСКИ"', nameLatin: 'OSNOVNA MUZIČKA ŠKOLA "JOSIP SLAVENSKI"', city: 'Нови Сад', address: 'Радничка 19/a', languages: ['serbian'], phone: '021/ 66 222 85', email: 'slavenski@gmail.com', type: 'ОШ', lat: 45.2494523, lng: 19.8481381, telegram: '', website: 'https://osjosiplavenski.edu.rs' },
-            { id: 37, name: 'БАЛЕТСКА ШКОЛА У НОВОМ САДУ', nameLatin: 'BALETSKA ŠKOLA U NOVOM SADU', city: 'Нови Сад', address: 'Булевар Цара Лазара 67', languages: ['serbian'], phone: '021 529 225', email: 'baletska@neobee.net', type: 'ОШ', lat: 45.2413861, lng: 19.8342052, telegram: '', website: 'https://baletskaskola.edu.rs' },
-            { id: 38, name: 'МУЗИЧКА ШКОЛА "ИСИДОР БАЈИЋ"', nameLatin: 'MUZIČKA ŠKOLA "ISIDOR BAJIĆ"', city: 'Нови Сад', address: 'Булевар цара Лазара 67', languages: ['serbian'], phone: '021 529 866', email: 'isabajic@sbb.rs', type: 'ОШ', lat: 45.2413041, lng: 19.8341383, telegram: '', website: 'https://msisidorbajic.edu.rs' },
-            { id: 39, name: 'ОШ "МАРИЈА ТРАНДАФИЛ"', nameLatin: 'OŠ "MARIJA TRANDAFIL"', city: 'Ветерник', address: 'Паунова 14', languages: ['serbian'], phone: '021/820-940', email: 'osmarijatrandafil@gmail.com', type: 'ОШ', lat: 45.2424243, lng: 19.7673659, telegram: '', website: 'https://osmarijatrandafil.edu.rs' },
-            { id: 40, name: 'Основна школа и предшколска установа "Свитац"', nameLatin: 'Osnovna škola i predškolska ustanova "Svitac"', city: 'Сремска Каменица', address: 'Слободана Бајића 47', languages: ['serbian'], phone: '021/461-006', email: 'ospusvitac@gmail.com', type: 'Приватна ОШ', lat: 45.2244584, lng: 19.847452, telegram: '', website: 'https://svitac.edu.rs' },
-            { id: 41, name: 'Основна школа "Свети Кирило и Методије"', nameLatin: 'Osnovna škola "Sveti Кирило i Metodije"', city: 'Нови Сад', address: 'Камењар3, бр.7', languages: ['serbian'], phone: '065/6008228', email: 'osnovnaskola@kiriloimetodije.com', type: 'Приватна ОШ', lat: 45.2280956, lng: 19.7835108, telegram: '', website: 'https://oskmetodije.edu.rs' },
-            { id: 42, name: 'Основна школа "Мирослав Мика Антић"', nameLatin: 'Osnovna škola "Miroslav Mika Антић"', city: 'Нови Сад', address: 'Доситејева 15', languages: ['serbian'], phone: '021442058', email: 'office@skolamikaantic.edu.rs', type: 'Приватна ОШ', lat: 45.2400874, lng: 19.7295536, telegram: '', website: 'https://osmmantic.edu.rs' },
-            { id: 43, name: 'Приватна основна школа "Јуниор"', nameLatin: 'Privatna osnovna škola "Junior"', city: 'Нови Сад', address: 'Симе Милутиновића Сарајлије број 32', languages: ['serbian'], phone: '021/6392655', email: 'info@cleveris.org', type: 'Приватна ОШ', lat: 45.2280507, lng: 19.7836374, telegram: '', website: 'https://junior.edu.rs' },
-            { id: 44, name: 'Приватна основна школа "Тврђава"', nameLatin: 'Privatna osnovna škola "Tvrđava"', city: 'Петроварадин', address: 'Штросмајерова 8', languages: ['serbian'], phone: '069/ 79 70 80', email: 'info@tvrdjava.edu.rs', type: 'Приватна ОШ', lat: 45.2543042, lng: 19.8613403, telegram: '', website: 'https://ostvrdjava.edu.rs' },
-            { id: 45, name: 'Основна српско-руска школа "Антон Павлович Чехов"', nameLatin: 'Osnovna srpsko-ruska škola "Anton Pavlović Čehov"', city: 'Нови Сад', address: 'Трг Марије Трандафил бр. 5', languages: ['serbian', 'russian'], phone: '', email: 'zivanka.m25@gmail.com', type: 'Приватна ОШ', lat: 45.2596907, lng: 19.8436628, telegram: '', website: 'https://osruskaskola.edu.rs' }
+        const allSchools = [
+            { id: 1, name: 'ОШ "ЈОВАН ДУЧИЋ"', address: 'Прерадовићева 6', languages: ['serbian'], phone: '021/6433-201', email: 'jducic@eunet.rs', lat: 44.813191, lng: 20.431334, telegram: '', website: 'https://www.osjducic.edu.rs/' },
+            { id: 2, name: 'ОШ "ВЕЉКО ПЕТРОВИЋ"', address: 'Краља Петра I 36', languages: ['serbian'], phone: '021/2998-009', email: 'begso@open.telekom.rs', lat: 44.813191, lng: 20.431334, telegram: '', website: 'https://skolevojvodine.vojvodina.gov.rs/' },
+            { id: 3, name: 'ОШ "АЛЕКСА ШАНТИЋ"', address: 'Все улицы в населённом пункте Степановићево.', languages: ['serbian'], phone: '021/717-055', email: 'aleksastep@mts.rs', lat: 45.926311, lng: 19.333524, telegram: '', website: 'https://www.osaleksasantic.edu.rs/' },
+            { id: 4, name: 'ОШ "МИРОСЛАВ АНТИЋ"', address: 'Раде Кончара 2', languages: ['serbian'], phone: '021/2992-268', email: 'pedagogantic@gmail.com', lat: 43.724288, lng: 20.683650, telegram: '', website: 'https://osmiroslavanticfutog.edu.rs' },
+            { id: 5, name: 'ОШ "ДЕСАНКА МАКСИМОВИЋ"', address: 'Царице Милице 1', languages: ['serbian'], phone: '021 89 52 43', email: 'desanka@neobee.net', lat: 45.252903, lng: 19.373108, telegram: '', website: 'https://osdesankamaksimovics.edu.rs' },
+            { id: 6, name: 'ОШ "ЂУРА ЈАКШИЋ"', address: 'Краља Петра I 9', languages: ['serbian'], phone: '021 62 13 015', email: 'jdjuraskolakac@gmail.com', lat: 45.296209, lng: 19.948762, telegram: '', website: 'https://skolakac.edu.rs/' },
+            { id: 7, name: 'ОШ "ИВО АНДРИЋ"', address: 'Будисава, Школска бр.3', languages: ['serbian', 'hungarian'], phone: '021/719018', email: 'osivoandricbudisava@gmail.com', lat: 45.279390, lng: 19.991200, telegram: '', website: 'http://ivoandricbudisava.edu.rs/srlat/' },
+            { id: 8, name: 'ОШ "ЖАРКО ЗРЕЊАНИН"', address: 'Булевар деспота Стефана 8', languages: ['serbian'], phone: '021 23 65 453', email: 'posta.skole@zarkons.edu.rs', lat: 45.237494, lng: 19.836374, telegram: '', website: 'https://zarkons.edu.rs/nastava/raspored-casova/' },
+            { id: 9, name: 'ОШ "СОЊА МАРИНКОВИЋ"', address: 'Пушкинова 28', languages: ['serbian', 'hungarian'], phone: '021 63 64 787', email: 'ossmnsad@gmail.com', lat: 45.243893, lng: 19.833754, telegram: '', website: 'https://sonjamarinkovicns.edu.rs/' },
+            { id: 10, name: 'ОШ "ВЕЉКО ВЛАХОВИЋ"', address: 'Улица VIII број 2', languages: ['serbian'], phone: '021 65 20 142', email: 'osveljkovlahovic@mts.rs', lat: 45.2737298, lng: 19.8569723, telegram: '', website: 'https://veljko-vlahovic.edu.rs/' },
+            { id: 11, name: 'ОШ "ЈОВАН ЈОВАНОВИЋ ЗМАЈ"', address: 'Школска 3', languages: ['serbian'], phone: '021 464 506', email: 'jjzmajkamenica@mts.rs', lat: 45.224674, lng: 19.843212, telegram: '', website: 'https://www.zmajevi.rs/index.php' },
+            { id: 12, name: 'ОШ "ЂОРЂЕ НАТОШЕВИЋ"', address: 'Максима Горког 54', languages: ['serbian'], phone: '021 66 12 957', email: 'djnatos@gmail.com', lat: 45.251613, lng: 19.8509796, telegram: '', website: 'https://www.djordje-natosevic.edu.rs/index.php' },
+            { id: 13, name: 'ОШ "ЂУРА ДАНИЋИЋ"', address: 'Душана Васиљева 19', languages: ['serbian'], phone: '021 45 29 62', email: 'ddanicic@eunet.rs', lat: 45.2608871, lng: 19.3257881, telegram: '', website: '' },
+            { id: 14, name: 'ОШ "БРАНКО РАДИЧЕВИЋ"', address: 'Футошка 5', languages: ['serbian'], phone: '021 66 22 201', email: 'jbnsbr@neobee.net', lat: 45.2609056, lng: 19.3257836, telegram: '', website: 'http://brankoviosnovci.edu.rs/' },
+            { id: 15, name: 'ОШ "ДОСИТЕЈ ОБРАДОВИЋ"', address: 'Филипа Филиповића 3', languages: ['serbian'], phone: '021 4774180', email: 'dositejns@mts.rs', lat: 45.2609241, lng: 19.3257791, telegram: 'https://t.me/+9NOphi8lK5pjOTJk', website: 'https://osdositejobradovic.edu.rs' },
+            { id: 16, name: 'ОШ "ДУШАН РАДОВИЋ"', address: 'Ченејска 61', languages: ['serbian'], phone: '021 41 91 95', email: 'dusanrad.skola@gmail.com', lat: 45.2892733, lng: 19.8079201, telegram: '', website: 'https://www.dusan-radovic.edu.rs/' },
+            { id: 17, name: 'ОШ "ИВАН ГУНДУЛИЋ"', address: 'Гундулићева 9', languages: ['serbian'], phone: '021 551 460', email: 'gundulic@gundulic.edu.rs', lat: 45.289411, lng: 19.6534077, telegram: '', website: 'https://gundulic.edu.rs/' },
+            { id: 18, name: 'ОШ "ИВО ЛОЛА РИБАР"', address: 'Краљевића Марка 2/a', languages: ['serbian'], phone: '021 47 21 772', email: 'skola@ivololaribar.net', lat: 45.2596662, lng: 19.833876, telegram: 'https://t.me/+IJOGga9rcjFlYWRi', website: 'https://osivololaribar.edu.rs/' },
+            { id: 19, name: 'ОШ "ЈОЖЕФ АТИЛА"', address: 'Шарпланинска 28', languages: ['serbian', 'hungarian'], phone: '021/505-141', email: 'jatila.ns.edu@gmail.com', lat: 45.237381, lng: 19.807638, telegram: '', website: 'https://jatila.edu.rs/' },
+            { id: 20, name: 'ОШ "ЈОВАН ПОПОВИЋ"', address: 'Раваничка 2', languages: ['serbian'], phone: '021/450-833', email: 'jpopovicns@yahoo.com', lat: 45.2452727, lng: 19.7890739, telegram: 'https://t.me/+w9p8elAPsLtmN2Ey', website: 'https://www.jovanpopovic.edu.rs/' },
+            { id: 21, name: 'ОШ "КОСТА ТРИФКОВИЋ"', address: 'Берислава Берића 2', languages: ['serbian'], phone: '021/444-063', email: 'skola@kostatrifkovicns.edu.rs', lat: 45.2642634, lng: 19.8331402, telegram: 'https://t.me/+HUc9BU6Ksq1hM2Ey', website: 'https://www.kostatrifkovicns.edu.rs/' },
+            { id: 22, name: 'ОШ "МИЛОШ ЦРЊАНСКИ"', address: 'Анђе Ранковић 2', languages: ['serbian'], phone: '021/6394-494', email: 'mcrnjanski.mcrnjanski@gmail.com', lat: 45.2476741, lng: 19.2690622, telegram: '', website: 'https://zkv.rs/' },
+            { id: 23, name: 'ОШ "НИКОЛА ТЕСЛА"', address: 'Футошки пут 25/a', languages: ['serbian'], phone: '4790-364', email: 'osnikolate@gmail.com', lat: 45.2470675, lng: 19.2861945, telegram: '', website: 'https://www.osnikolateslans.edu.rs/' },
+            { id: 24, name: 'ОШ "ПЕТЕФИ ШАНДОР"', address: 'Боре Продановића 15a', languages: ['serbian', 'hungarian'], phone: '021/547-465', email: 'os.petefi.sekretar@gmail.com', lat: 45.2542898, lng: 19.8270009, telegram: 'https://t.me/novi_sad_petefi_shandor', website: 'http://www.ospetefins.edu.rs/' },
+            { id: 25, name: 'ОШ "ПРВА ВОЈВОЂАНСКА БРИГАДА"', address: 'Сељачких буна 51/a', languages: ['serbian'], phone: '021/ 400-540', email: 'prvavojvodjanskabrigada@gmail.com', lat: 45.2539052, lng: 19.795289, telegram: '', website: 'http://www.prvavojvodjanska.edu.rs/' },
+            { id: 26, name: 'ОШ "СВЕТОЗАР МАРКОВИЋ ТОЗА"', address: 'Јанка Чмелика 89', languages: ['serbian'], phone: '021/512-231', email: 'tozans@sbb.rs', lat: 45.2633259, lng: 19.8066136, telegram: '', website: 'http://www.toza.edu.rs/' },
+            { id: 27, name: 'ОШ "ВАСА СТАЈИЋ"', address: 'Војводе Книћанина 12б', languages: ['serbian'], phone: '021/469-210', email: 'os.vasastajic@mts.rs', lat: 45.2460593, lng: 19.8236694, telegram: 'https://t.me/+uUgp8QhUE4Q3MGY6', website: 'https://www.vstajicns.rs/' },
+            { id: 28, name: 'ОШ "ВУК КАРАЏИЋ"', address: 'Радоја Домановића 24', languages: ['serbian'], phone: '021/6339-153', email: 'direktorvukns@mts.rs', lat: 44.9715879, lng: 19.393371, telegram: 'https://t.me/+e-Ty1fzj8_pjZGUy', website: 'http://vukkaradzicns.edu.rs' },
+            { id: 29, name: 'ОШ "СВЕТИ САВА"', address: 'Јована Јовановића Змаја 24', languages: ['serbian'], phone: '021/6216016', email: 'nrastko@neobee.net', lat: 45.2959874, lng: 19.7450343, telegram: '', website: 'https://www.svetisavarumenka.edu.rs/' },
+            { id: 30, name: 'ОШ "МИХАЈЛО ПУПИН"', address: 'Краља Александра 38', languages: ['serbian'], phone: '823-123', email: 'osmihajlopupin@neobee.net', lat: 45.2533103, lng: 19.2280369, telegram: '', website: 'http://www.etspupin.edu.rs/' },
+            { id: 31, name: 'ОШ "22. АВГУСТ"', address: 'Трг жртава геноцида 1', languages: ['serbian'], phone: '021/826-020', email: 'osbukovac22avgust@mts.rs', lat: 45.1964888, lng: 19.874337, telegram: '', website: 'http://osnovnaskolabukovac.edu.rs/' },
+            { id: 32, name: 'ОШ "ЉУДОВИТ ШТУР"', address: 'Железничка 3', languages: ['serbian', 'slovak'], phone: '021/827-015', email: 'ludovitsturkisac@gmail.com', lat: 45.3597088, lng: 19.6865229, telegram: '', website: 'https://skolaludovitstur.edu.rs/index.php/sr/' },
+            { id: 33, name: 'ОШ "ЛАЗА КОСТИЋ"', address: 'Лаза Костић 42', languages: ['serbian'], phone: '021/2988-006', email: 'oslkostic@gmail.com', lat: 45.2252955, lng: 20.018946, telegram: '', website: ' ' },
+            { id: 34, name: 'ШКОЛА ЗА ОСНОВНО И СРЕДЊЕ ОБРАЗОВАЊЕ "МИЛАН ПЕТРОВИЋ" СА ДОМОМ УЧЕНИКА', address: 'Браће Рибникара 32', languages: ['serbian', 'slovak'], phone: '6616-366', email: 'skolamp@eunet.rs', lat: 45.2533635, lng: 19.7763773, telegram: '', website: 'https://osmilap.edu.rs' },
+            { id: 35, name: 'ШКОЛА ЗА ОСНОВНО ОБРАЗОВАЊЕ И ВАСПИТАЊЕ ОДРАСЛИХ "СВЕТИ САВА"', address: 'Огњена Прице 7', languages: ['serbian'], phone: '021/547-895', email: 'sv.sava@neobee.net', lat: 45.2525266, lng: 19.8335838, telegram: '', website: 'https://osssavans.edu.rs' },
+            { id: 36, name: 'ОСНОВНА МУЗИЧКА ШКОЛА "ЈОСИП СЛАВЕНСКИ"', address: 'Радничка 19/a', languages: ['serbian'], phone: '021/ 66 222 85', email: 'slavenski@gmail.com', lat: 45.249405, lng: 19.8456135, telegram: '', website: 'https://osjosiplavenski.edu.rs' },
+            { id: 37, name: 'БАЛЕТСКА ШКОЛА У НОВОМ САДУ', address: 'Булевар Цара Лазара 67', languages: ['serbian'], phone: '021 529 225', email: 'baletska@neobee.net', lat: 45.2414981, lng: 19.8177028, telegram: '', website: 'https://baletskaskola.edu.rs' },
+            { id: 38, name: 'МУЗИЧКА ШКОЛА "ИСИДОР БАЈИЋ"', address: 'Булевар цара Лазара 67', languages: ['serbian'], phone: '021 529 866', email: 'isabajic@sbb.rs', lat: 45.2414981, lng: 19.8177028, telegram: '', website: 'https://msisidorbajic.edu.rs' },
+            { id: 39, name: 'ОШ "МАРИЈА ТРАНДАФИЛ"', address: 'Паунова 14', languages: ['serbian'], phone: '021/820-940', email: 'osmarijatrandafil@gmail.com', lat: 45.2417, lng: 19.7548, telegram: '', website: 'https://osmarijatrandafil.edu.rs' },
+            { id: 40, name: 'Основна школа и предшколска установа "Свитац"', address: 'Слободана Бајића 47', languages: ['serbian'], phone: '021/461-006', email: 'ospusvitac@gmail.com', lat: 45.2483, lng: 19.8427, telegram: '', website: 'https://svitac.edu.rs' },
+            { id: 41, name: 'Основна школа "Свети Кирило и Методије"', address: 'Камењар3, бр.7', languages: ['serbian'], phone: '065/6008228', email: 'osnovnaskola@kiriloimetodije.com', lat: 45.2680, lng: 19.8290, telegram: '', website: 'https://oskmetodije.edu.rs' },
+            { id: 42, name: 'Основна школа "Мирослав Мика Антић"', address: 'Доситејева 15', languages: ['serbian'], phone: '021442058', email: 'office@skolamikaantic.edu.rs', lat: 45.2312, lng: 19.6974, telegram: '', website: 'https://osmmantic.edu.rs' },
+            { id: 43, name: 'Приватна основна школа "Јуниор"', address: 'Симе Милутиновића Сарајлије број 32', languages: ['serbian'], phone: '021/6392655', email: 'info@cleveris.org', lat: 45.2435, lng: 19.8413, telegram: '', website: 'https://junior.edu.rs' },
+            { id: 44, name: 'Приватна основна школа "Тврђава"', address: 'Штросмајерова 8', languages: ['serbian'], phone: '069/ 79 70 80', email: 'info@tvrdjava.edu.rs', lat: 45.2625, lng: 19.8596, telegram: '', website: 'https://ostvrdjava.edu.rs' },
+            { id: 45, name: 'Основна српско-руска школа "Антон Павлович Чехов"', address: 'Трг Марије Трандафил бр. 5', languages: ['serbian', 'russian'], phone: '', email: 'zivanka.m25@gmail.com', lat: 45.2518, lng: 19.8468, telegram: '', website: 'https://osruskaskola.edu.rs' }
         ];
 
         function initMap() {
@@ -550,7 +550,7 @@
             allSchools.forEach((school, index) => {
                 const markerIcon = L.divIcon({
                     className: 'school-marker',
-                    html: <div style="background: #667eea; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">${index + 1}</div>,
+                    html: `<div style="background: #667eea; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">${index + 1}</div>`,
                     iconSize: [30, 30],
                     iconAnchor: [15, 15]
                 });
@@ -584,10 +584,10 @@
             if (distanceLine) map.removeLayer(distanceLine);
             
             try {
-                const response = await fetch(${MAKE_WEBHOOK_URL}?address=${encodeURIComponent(addressSearch)});
+                const response = await fetch(`${MAKE_WEBHOOK_URL}?address=${encodeURIComponent(addressSearch)}`);
 
                 if (!response.ok) {
-                    throw new Error(HTTP error! Status: ${response.status});
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
                 const result = await response.json();
@@ -609,12 +609,12 @@
                             iconSize: [25, 25],
                             iconAnchor: [12, 12]
                         })
-                    }).bindPopup(<strong>Ваш адрес:</strong> ${userCoords.address}).addTo(markersGroup);
+                    }).bindPopup(`<strong>Ваш адрес:</strong> ${userCoords.address}`).addTo(markersGroup);
 
                     foundSchools.forEach((school, index) => {
                          const markerIcon = L.divIcon({
                             className: 'school-marker',
-                            html: <div style="background: #dc3545; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">${allSchools.findIndex(s => s.id === school.id) + 1}</div>,
+                            html: `<div style="background: #dc3545; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">${allSchools.findIndex(s => s.id === school.id) + 1}</div>`,
                             iconSize: [30, 30],
                             iconAnchor: [15, 15]
                         });
@@ -661,7 +661,7 @@
             
             let addressInfo = '';
             if (userCoords) {
-                addressInfo = <div class="address-marker-info">📍 Ваш адрес: ${userCoords.address}</div>;
+                addressInfo = `<div class="address-marker-info">📍 Ваш адрес: ${userCoords.address}</div>`;
             }
             
             const schoolsHTML = schools.map((school) => {
@@ -673,31 +673,31 @@
                 };
                 const languages = Array.isArray(school.languages) ? school.languages : [school.languages];
                 const languageTags = languages.map(lang => {
-                    return <span class="language-tag">${langMap[lang] || lang}</span>;
+                    return `<span class="language-tag">${langMap[lang] || lang}</span>`;
                 }).join('');
                 
                 let distanceInfo = '';
                 if (school.distance !== undefined) {
-                    distanceInfo = <div class="school-distance">📏 ${school.distance.toFixed(1)} км от вашего адреса</div>;
+                    distanceInfo = `<div class="school-distance">📏 ${school.distance.toFixed(1)} км от вашего адреса</div>`;
                 }
                 
                 const isHighlighted = highlightSchoolId === school.id;
                 const cardClass = isHighlighted ? 'school-card highlighted' : 'school-card';
                 
-                return 
+                return `
                     <div class="${cardClass}" onclick="selectSchoolFromList(${school.id})" style="cursor: pointer;">
                         <div class="school-name">${school.name}</div>
                         <div class="school-address">📍 ${school.address}</div>
                         ${distanceInfo}
                         <div class="school-languages">${languageTags}</div>
                         <div class="school-contacts">
-                            ${school.phone ? <a href="tel:${school.phone.split(',')[0].trim()}" class="contact-link" onclick="event.stopPropagation()">📞 ${school.phone.split(',')[0].trim()}</a> : ''}
-                            ${school.email ? <a href="mailto:${school.email}" class="contact-link" onclick="event.stopPropagation()">✉️ Почта</a> : ''}
-                            ${school.website ? <a href="${school.website}" target="_blank" class="contact-link" onclick="event.stopPropagation()">🌐 Сайт</a> : ''}
-                            ${school.telegram ? <a href="${school.telegram}" target="_blank" class="contact-link" onclick="event.stopPropagation()">📱 Telegram</a> : ''}
+                            ${school.phone ? `<a href="tel:${school.phone.split(',')[0].trim()}" class="contact-link" onclick="event.stopPropagation()">📞 ${school.phone.split(',')[0].trim()}</a>` : ''}
+                            ${school.email ? `<a href="mailto:${school.email}" class="contact-link" onclick="event.stopPropagation()">✉️ Почта</a>` : ''}
+                            ${school.website ? `<a href="${school.website}" target="_blank" class="contact-link" onclick="event.stopPropagation()">🌐 Сайт</a>` : ''}
+                            ${school.telegram ? `<a href="${school.telegram}" target="_blank" class="contact-link" onclick="event.stopPropagation()">📱 Telegram</a>` : ''}
                         </div>
                     </div>
-                ;
+                `;
             }).join('');
             
             resultsContainer.innerHTML = addressInfo + schoolsHTML;
@@ -716,18 +716,18 @@
             let distanceText = '';
             if (userCoords) {
                 const distance = calculateDistance(userCoords.lat, userCoords.lng, school.lat, school.lng);
-                distanceText = <p><strong>Расстояние:</strong> ${distance.toFixed(1)} км</p>;
+                distanceText = `<p><strong>Расстояние:</strong> ${distance.toFixed(1)} км</p>`;
             }
             
-            return 
+            return `
                 <div>
                     <h4>${school.name}</h4>
                     <p><strong>Адрес:</strong> ${school.address}</p>
                     <p><strong>Языки:</strong> ${languagesText || 'не указано'}</p>
                     ${distanceText}
-                    ${school.phone ? <p><strong>Телефон:</strong> ${school.phone.split(',')[0].trim()}</p> : ''}
+                    ${school.phone ? `<p><strong>Телефон:</strong> ${school.phone.split(',')[0].trim()}</p>` : ''}
                 </div>
-            ;
+            `;
         }
 
         function selectSchoolFromList(schoolId) {
@@ -782,7 +782,7 @@
 
         function loadDocuments() {
             const grid = document.getElementById('documentsGrid');
-            const documentsHTML = documentsData.map(doc => 
+            const documentsHTML = documentsData.map(doc => `
                 <div class="document-card">
                     <div class="document-title">${doc.title}</div>
                     <div class="document-meta">
@@ -794,16 +794,16 @@
                         <button class="btn-view" onclick="viewDocument('${doc.title}')">👁️ Отвори</button>
                     </div>
                 </div>
-            ).join('');
+            `).join('');
             grid.innerHTML = documentsHTML;
         }
 
         function downloadDocument(title) {
-            alert(Започиње преузимање документа: ${title});
+            alert(`Започиње преузимање документа: ${title}`);
         }
 
         function viewDocument(title) {
-            alert(Отварање документа: ${title});
+            alert(`Отварање документа: ${title}`);
         }
         
         document.addEventListener('DOMContentLoaded', function() {
