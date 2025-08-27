@@ -520,7 +520,7 @@
             { id: 30, name: 'ОШ "МИХАЈЛО ПУПИН"', address: 'Краља Александра 38', languages: ['serbian'], phone: '823-123', email: 'osmihajlopupin@neobee.net', lat: 45.2533103, lng: 19.2280369, telegram: '', website: 'http://www.etspupin.edu.rs/' },
             { id: 31, name: 'ОШ "22. АВГУСТ"', address: 'Трг жртава геноцида 1', languages: ['serbian'], phone: '021/826-020', email: 'osbukovac22avgust@mts.rs', lat: 45.1964888, lng: 19.874337, telegram: '', website: 'http://osnovnaskolabukovac.edu.rs/' },
             { id: 32, name: 'ОШ "ЉУДОВИТ ШТУР"', address: 'Железничка 3', languages: ['serbian', 'slovak'], phone: '021/827-015', email: 'ludovitsturkisac@gmail.com', lat: 45.3597088, lng: 19.6865229, telegram: '', website: 'https://skolaludovitstur.edu.rs/index.php/sr/' },
-            { id: 33, name: 'ОШ "ЛАЗА КОСТИЋ"', address: 'Лаза Костић 42', languages: ['serbian'], phone: '021/2988-006', email: 'oslkostic@gmail.com', lat: 45.2252955, lng: 20.018946, telegram: '', website: ' ' },
+            { id: 33, name: 'ОШ "ЛАЗА КОСТИЋ"', address: 'Лаза Костић 42', languages: ['serbian'], phone: '021/2988-006', email: 'oslkostic@gmail.com', lat: 45.2252955, lng: 20.018946, telegram: '', website: '' },
             { id: 34, name: 'ШКОЛА ЗА ОСНОВНО И СРЕДЊЕ ОБРАЗОВАЊЕ "МИЛАН ПЕТРОВИЋ" СА ДОМОМ УЧЕНИКА', address: 'Браће Рибникара 32', languages: ['serbian', 'slovak'], phone: '6616-366', email: 'skolamp@eunet.rs', lat: 45.2533635, lng: 19.7763773, telegram: '', website: 'https://osmilap.edu.rs' },
             { id: 35, name: 'ШКОЛА ЗА ОСНОВНО ОБРАЗОВАЊЕ И ВАСПИТАЊЕ ОДРАСЛИХ "СВЕТИ САВА"', address: 'Огњена Прице 7', languages: ['serbian'], phone: '021/547-895', email: 'sv.sava@neobee.net', lat: 45.2525266, lng: 19.8335838, telegram: '', website: 'https://osssavans.edu.rs' },
             { id: 36, name: 'ОСНОВНА МУЗИЧКА ШКОЛА "ЈОСИП СЛАВЕНСКИ"', address: 'Радничка 19/a', languages: ['serbian'], phone: '021/ 66 222 85', email: 'slavenski@gmail.com', lat: 45.249405, lng: 19.8456135, telegram: '', website: 'https://osjosiplavenski.edu.rs' },
@@ -623,4 +623,198 @@
                             .addTo(markersGroup);
                     });
 
-                    if (
+                    if (foundSchools.length > 0) {
+                        if (distanceLine) map.removeLayer(distanceLine);
+                        distanceLine = L.polyline([
+                            [userCoords.lat, userCoords.lng],
+                            [foundSchools[0].lat, foundSchools[0].lng]
+                        ], {
+                            color: '#dc3545',
+                            weight: 3,
+                            opacity: 0.7,
+                            dashArray: '10, 10'
+                        }).addTo(map);
+                        
+                        const group = new L.featureGroup([userAddressMarker, ...markersGroup.getLayers()]);
+                        map.fitBounds(group.getBounds().pad(0.5));
+                    }
+                    
+                    displaySchoolDetails(foundSchools, userCoords, foundSchools[0].id);
+
+                } else {
+                    resultsContainer.innerHTML = '<div class="no-results">Не удалось найти школы по этому адресу. Проверьте адрес или попробуйте еще раз.</div>';
+                }
+
+            } catch (error) {
+                console.error('Ошибка при обращении к Make:', error);
+                resultsContainer.innerHTML = '<div class="no-results">Произошла ошибка при поиске. Пожалуйста, попробуйте еще раз.</div>';
+            }
+        }
+
+        function displaySchoolDetails(schools, userCoords = null, highlightSchoolId = null) {
+            const resultsContainer = document.getElementById('schoolResults');
+            
+            if (schools.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">Не найдено школ, соответствующих выбранным критериям.</div>';
+                return;
+            }
+            
+            let addressInfo = '';
+            if (userCoords) {
+                addressInfo = `<div class="address-marker-info">📍 Ваш адрес: ${userCoords.address}</div>`;
+            }
+            
+            const schoolsHTML = schools.map((school) => {
+                const langMap = {
+                    'serbian': 'Сербский',
+                    'hungarian': 'Венгерский',
+                    'slovak': 'Словацкий',
+                    'russian': 'Русский'
+                };
+                const languages = Array.isArray(school.languages) ? school.languages : [school.languages];
+                const languageTags = languages.map(lang => {
+                    return `<span class="language-tag">${langMap[lang] || lang}</span>`;
+                }).join('');
+                
+                let distanceInfo = '';
+                if (school.distance !== undefined) {
+                    distanceInfo = `<div class="school-distance">📏 ${school.distance.toFixed(1)} км от вашего адреса</div>`;
+                }
+                
+                const isHighlighted = highlightSchoolId === school.id;
+                const cardClass = isHighlighted ? 'school-card highlighted' : 'school-card';
+                
+                return `
+                    <div class="${cardClass}" onclick="selectSchoolFromList(${school.id})" style="cursor: pointer;">
+                        <div class="school-name">${school.name}</div>
+                        <div class="school-address">📍 ${school.address}</div>
+                        ${distanceInfo}
+                        <div class="school-languages">${languageTags}</div>
+                        <div class="school-contacts">
+                            ${school.phone ? `<a href="tel:${school.phone.split(',')[0].trim()}" class="contact-link" onclick="event.stopPropagation()">📞 ${school.phone.split(',')[0].trim()}</a>` : ''}
+                            ${school.email ? `<a href="mailto:${school.email}" class="contact-link" onclick="event.stopPropagation()">✉️ Почта</a>` : ''}
+                            ${school.website ? `<a href="${school.website}" target="_blank" class="contact-link" onclick="event.stopPropagation()">🌐 Сайт</a>` : ''}
+                            ${school.telegram ? `<a href="${school.telegram}" target="_blank" class="contact-link" onclick="event.stopPropagation()">📱 Telegram</a>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            resultsContainer.innerHTML = addressInfo + schoolsHTML;
+        }
+
+        function createPopupContent(school, userCoords = null) {
+            const languages = Array.isArray(school.languages) ? school.languages : [school.languages];
+            const langMap = {
+                'serbian': 'Сербский',
+                'hungarian': 'Венгерский',
+                'slovak': 'Словацкий',
+                'russian': 'Русский'
+            };
+            const languagesText = languages.map(lang => langMap[lang] || lang).join(', ');
+            
+            let distanceText = '';
+            if (userCoords) {
+                const distance = calculateDistance(userCoords.lat, userCoords.lng, school.lat, school.lng);
+                distanceText = `<p><strong>Расстояние:</strong> ${distance.toFixed(1)} км</p>`;
+            }
+            
+            return `
+                <div>
+                    <h4>${school.name}</h4>
+                    <p><strong>Адрес:</strong> ${school.address}</p>
+                    <p><strong>Языки:</strong> ${languagesText || 'не указано'}</p>
+                    ${distanceText}
+                    ${school.phone ? `<p><strong>Телефон:</strong> ${school.phone.split(',')[0].trim()}</p>` : ''}
+                </div>
+            `;
+        }
+
+        function selectSchoolFromList(schoolId) {
+            const school = allSchools.find(s => s.id === schoolId);
+            if (school) {
+                map.setView([school.lat, school.lng], 15);
+            }
+        }
+        
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of Earth in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const d = R * c;
+            return d;
+        }
+
+        function toggleFilters() {
+            const filters = document.getElementById('filters');
+            filters.style.display = filters.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'documents') {
+                loadDocuments();
+            }
+        }
+
+        const documentsData = [
+            { title: 'Правила уписа у основне школе', description: 'Документ о процедурама и условима уписа ученика у основне школе Нови Сада', type: 'PDF', size: '2.3 МБ', date: '15.01.2025', category: 'Упис' },
+            { title: 'Листа потребних докумената', description: 'Комплетна листа докумената неопходних за упис', type: 'PDF', size: '1.1 МБ', date: '10.01.2025', category: 'Упис' },
+            { title: 'Школски календар 2024/25', description: 'Званични школски календар са важним датумима', type: 'PDF', size: '0.8 МБ', date: '20.08.2024', category: 'Календар' },
+            { title: 'Списак школских округа', description: 'Табела са поделом територије по школским округима', type: 'XLS', size: '0.5 МБ', date: '01.09.2024', category: 'Територија' },
+            { title: 'Контакти школских установа', description: 'Адресе, телефони и мејлови свих школа у Нови Саду', type: 'XLS', size: '1.2 МБ', date: '05.01.2025', category: 'Контакти' },
+            { title: 'Правилник о оцењивању', description: 'Службени правилник о начину оцењивања ученика', type: 'PDF', size: '3.1 МБ', date: '12.09.2024', category: 'Правилници' }
+        ];
+
+        function loadDocuments() {
+            const grid = document.getElementById('documentsGrid');
+            const documentsHTML = documentsData.map(doc => `
+                <div class="document-card">
+                    <div class="document-title">${doc.title}</div>
+                    <div class="document-meta">
+                        ${doc.type} • ${doc.size} • Ажурирано: ${doc.date}
+                    </div>
+                    <p style="color: #666; margin-bottom: 1rem; font-size: 0.95rem;">${doc.description}</p>
+                    <div class="document-actions">
+                        <button class="btn-download" onclick="downloadDocument('${doc.title}')">⬇️ Скачај</button>
+                        <button class="btn-view" onclick="viewDocument('${doc.title}')">👁️ Отвори</button>
+                    </div>
+                </div>
+            `).join('');
+            grid.innerHTML = documentsHTML;
+        }
+
+        function downloadDocument(title) {
+            alert(`Започиње преузимање документа: ${title}`);
+        }
+
+        function viewDocument(title) {
+            alert(`Отварање документа: ${title}`);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+        });
+
+        document.getElementById('addressSearch').addEventListener('input', (e) => {
+            if (e.target.value.trim() === '') {
+                displayAllSchools();
+            }
+        });
+    </script>
+</body>
+</html>
