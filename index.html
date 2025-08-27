@@ -492,15 +492,55 @@
         const MAKE_WEBHOOK_URL = 'https://hook.eu2.make.com/jjy9e9hfgtgalaka4zhsupsaehljn7qd';
         let currentSchools = [];
         let map, markersGroup, userAddressMarker, selectedSchoolMarker, distanceLine;
-        
-        const allSchools = [
-            { id: 1, name: 'ОШ "ВАСА СТАЈИЋ"', lat: 45.2505, lng: 19.8329, address: 'Улица Стевана Сремца 1', languages: ['serbian', 'hungarian'], type: 'elementary', phone: '+38121422736', email: 'osvasastajic@eunet.rs', website: 'http://osvasastajic.edu.rs', telegram: 'https://t.me/osvasastajic' },
-            { id: 2, name: 'ОШ "ДУШАН РАДОВИЋ"', lat: 45.2478, lng: 19.8271, address: 'Булевар Ослобођења 26', languages: ['serbian', 'slovak'], type: 'elementary', phone: '+38121421041', email: 'osdusanradovic@eunet.rs', website: 'http://osdusanradovic.edu.rs', telegram: 'https://t.me/osdusanradovic' },
-            { id: 3, name: 'ОШ "ЈОВАН ПОПОВИЋ"', lat: 45.2458, lng: 19.8256, address: 'Народног фронта 2', languages: ['serbian'], type: 'elementary', phone: '+38121421255', email: 'osjovanpopovic@eunet.rs', website: 'http://osjovanpopovic.edu.rs', telegram: 'https://t.me/osjovanpopovic' },
-            { id: 4, name: 'ОШ "МАРИЈА МИЛУТИНОВИЋ"', lat: 45.2520, lng: 19.8400, address: 'Улица Марије Милутиновић 5', languages: ['serbian', 'multilingual'], type: 'elementary', phone: '+38121423123', email: 'osmarijamilutinovic@eunet.rs', website: 'http://osmarijamilutinovic.edu.rs', telegram: 'https://t.me/osmarijamilutinovic' },
-            { id: 5, name: 'ОШ "ПЕТАР ПЕТРОВИЋ ЊЕГОШ"', lat: 45.2566, lng: 19.8450, address: 'Булевар Цара Лазара 1', languages: ['serbian', 'hungarian'], type: 'elementary', phone: '+38121543210', email: 'osppnjegos@eunet.rs', website: 'http://osppnjegos.edu.rs', telegram: 'https://t.me/osppnjegos' }
-        ];
 
+        const allSchools = [
+            { id: 1, name: 'ОШ "ЈОВАН ДУЧИЋ"', lat: 45.2536, lng: 19.8643, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 2, name: 'ОШ "ВЕЉКО ПЕТРОВИЋ"', lat: 45.2443, lng: 19.5546, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 3, name: 'ОШ "АЛЕКСА ШАНТИЋ"', lat: 45.3340, lng: 19.6425, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 4, name: 'ОШ "МИРОСЛАВ АНТИЋ"', lat: 45.2312, lng: 19.6974, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 5, name: 'ОШ "ДЕСАНКА МАКСИМОВИЋ"', lat: 45.2435, lng: 19.6908, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 6, name: 'ОШ "ЂУРА ЈАКШИЋ"', lat: 45.2974, lng: 19.9272, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 7, name: 'ОШ "ИВО АНДРИЋ"', lat: 45.2965, lng: 20.0163, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 8, name: 'ОШ "ЖАРКО ЗРЕЊАНИН"', lat: 45.2608, lng: 19.8329, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 9, name: 'ОШ "СОЊА МАРИНКОВИЋ"', lat: 45.2415, lng: 19.8384, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 10, name: 'ОШ "ВЕЉКО ВЛАХОВИЋ"', lat: 45.3021, lng: 19.9197, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 11, name: 'ОШ "ЈОВАН ЈОВАНОВИЋ ЗМАЈ"', lat: 45.2287, lng: 19.8378, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 12, name: 'ОШ "ЂОРЂЕ НАТОШЕВИЋ"', lat: 45.2505, lng: 19.8454, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 13, name: 'ОШ "ЂУРА ДАНИЋИЋ"', lat: 45.2427, lng: 19.8550, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 14, name: 'ОШ "БРАНКО РАДИЧЕВИЋ"', lat: 45.2530, lng: 19.8390, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 15, name: 'ОШ "ДОСИТЕЈ ОБРАДОВИЋ"', lat: 45.2429, lng: 19.8273, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 16, name: 'ОШ "ДУШАН РАДОВИЋ"', lat: 45.3055, lng: 19.8252, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 17, name: 'ОШ "ИВАН ГУНДУЛИЋ"', lat: 45.2570, lng: 19.8492, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 18, name: 'ОШ "ИВО ЛОЛА РИБАР"', lat: 45.2578, lng: 19.8290, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 19, name: 'ОШ "ЈОЖЕФ АТИЛА"', lat: 45.2447, lng: 19.8242, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 20, name: 'ОШ "ЈОВАН ПОПОВИЋ"', lat: 45.2464, lng: 19.8427, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 21, name: 'ОШ "КОСТА ТРИФКОВИЋ"', lat: 45.2435, lng: 19.8184, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 22, name: 'ОШ "МИЛОШ ЦРЊАНСКИ"', lat: 45.2348, lng: 19.8291, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 23, name: 'ОШ "НИКОЛА ТЕСЛА"', lat: 45.2461, lng: 19.7891, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 24, name: 'ОШ "ПЕТЕФИ ШАНДОР"', lat: 45.2562, lng: 19.8315, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 25, name: 'ОШ "ПРВА ВОЈВОЂАНСКА БРИГАДА"', lat: 45.2676, lng: 19.8152, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 26, name: 'ОШ "СВЕТОЗАР МАРКОВИЋ ТОЗА"', lat: 45.2427, lng: 19.8207, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 27, name: 'ОШ "ВАСА СТАЈИЋ"', lat: 45.2559, lng: 19.8510, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 28, name: 'ОШ "ВУК КАРАЏИЋ"', lat: 45.2486, lng: 19.8037, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 29, name: 'ОШ "СВЕТИ САВА"', lat: 45.2530, lng: 19.8468, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 30, name: 'ОШ "МИХАЈЛО ПУПИН"', lat: 45.2557, lng: 19.7616, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 31, name: 'ОШ "22. АВГУСТ"', lat: 45.2514, lng: 19.8457, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 32, name: 'ОШ "ЉУДОВИТ ШТУР"', lat: 45.2974, lng: 19.9272, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 33, name: 'ОШ "ЛАЗА КОСТИЋ"', lat: 45.2057, lng: 20.0125, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 34, name: 'ШКОЛА ЗА ОСНОВНО И СРЕДЊЕ ОБРАЗОВАЊЕ "МИЛАН ПЕТРОВИЋ" СА ДОМОМ УЧЕНИКА', lat: 45.2568, lng: 19.8358, address: 'Нови-Сад', languages: [], type: 'specialized', phone: '', email: '', website: '', telegram: '' },
+            { id: 35, name: 'ШКОЛА ЗА ОСНОВНО ОБРАЗОВАЊЕ И ВАСПИТАЊЕ ОДРАСЛИХ "СВЕТИ САВА"', lat: 45.2510, lng: 19.8422, address: 'Нови-Сад', languages: [], type: 'adult_education', phone: '', email: '', website: '', telegram: '' },
+            { id: 36, name: 'ОСНОВНА МУЗИЧКА ШКОЛА "ЈОСИП СЛАВЕНСКИ"', lat: 45.2476, lng: 19.8481, address: 'Нови-Сад', languages: [], type: 'music', phone: '', email: '', website: '', telegram: '' },
+            { id: 37, name: 'БАЛЕТСКА ШКОЛА У НОВОМ САДУ', lat: 45.2415, lng: 19.8378, address: 'Нови-Сад', languages: [], type: 'ballet', phone: '', email: '', website: '', telegram: '' },
+            { id: 38, name: 'МУЗИЧКА ШКОЛА "ИСИДОР БАЈИЋ"', lat: 45.2415, lng: 19.8378, address: 'Нови-Сад', languages: [], type: 'music', phone: '', email: '', website: '', telegram: '' },
+            { id: 39, name: 'ОШ "МАРИЈА ТРАНДАФИЛ"', lat: 45.2417, lng: 19.7548, address: 'Нови-Сад', languages: [], type: 'elementary', phone: '', email: '', website: '', telegram: '' },
+            { id: 40, name: 'Основна школа и предшколска установа "Свитац"', lat: 45.2483, lng: 19.8427, address: 'Нови-Сад', languages: [], type: 'private', phone: '', email: '', website: '', telegram: '' },
+            { id: 41, name: 'Основна школа "Свети Кирило и Методије"', lat: 45.2680, lng: 19.8290, address: 'Нови-Сад', languages: [], type: 'private', phone: '', email: '', website: '', telegram: '' },
+            { id: 42, name: 'Основна школа "Мирослав Мика Антић"', lat: 45.2312, lng: 19.6974, address: 'Нови-Сад', languages: [], type: 'private', phone: '', email: '', website: '', telegram: '' },
+            { id: 43, name: 'Приватна основна школа "Јуниор"', lat: 45.2435, lng: 19.8413, address: 'Нови-Сад', languages: [], type: 'private', phone: '', email: '', website: '', telegram: '' },
+            { id: 44, name: 'Приватна основна школа "Тврђава"', lat: 45.2625, lng: 19.8596, address: 'Нови-Сад', languages: [], type: 'private', phone: '', email: '', website: '', telegram: '' },
+            { id: 45, name: 'Основна српско-руска школа "Антон Павлович Чехов"', lat: 45.2518, lng: 19.8468, address: 'Нови-Сад', languages: ['russian'], type: 'private', phone: '', email: '', website: '', telegram: '' },
+        ];
+        
         function initMap() {
             map = L.map('map').setView([45.2458, 19.8256], 12);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -513,8 +553,15 @@
 
         function displayAllSchools() {
             markersGroup.clearLayers();
-            allSchools.forEach(school => {
-                const marker = L.marker([school.lat, school.lng]).addTo(markersGroup)
+            allSchools.forEach((school, index) => {
+                const markerIcon = L.divIcon({
+                    className: 'school-marker',
+                    html: `<div style="background: #667eea; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">${index + 1}</div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                const marker = L.marker([school.lat, school.lng], { icon: markerIcon }).addTo(markersGroup)
                     .bindPopup(createPopupContent(school));
                 
                 marker.on('click', function() {
@@ -625,7 +672,8 @@
                     'serbian': 'Сербский',
                     'hungarian': 'Венгерский',
                     'slovak': 'Словацкий',
-                    'multilingual': 'Многоязычная'
+                    'multilingual': 'Многоязычная',
+                    'russian': 'Русский'
                 };
                 // Убедимся, что languages - это массив
                 const languages = Array.isArray(school.languages) ? school.languages : [school.languages];
@@ -648,10 +696,10 @@
                         ${distanceInfo}
                         <div class="school-languages">${languageTags}</div>
                         <div class="school-contacts">
-                            <a href="tel:${school.phone}" class="contact-link" onclick="event.stopPropagation()">📞 ${school.phone}</a>
-                            <a href="mailto:${school.email}" class="contact-link" onclick="event.stopPropagation()">✉️ Почта</a>
-                            <a href="${school.website}" target="_blank" class="contact-link" onclick="event.stopPropagation()">🌐 Сайт</a>
-                            <a href="${school.telegram}" target="_blank" class="contact-link" onclick="event.stopPropagation()">📱 Telegram</a>
+                            ${school.phone ? `<a href="tel:${school.phone}" class="contact-link" onclick="event.stopPropagation()">📞 ${school.phone}</a>` : ''}
+                            ${school.email ? `<a href="mailto:${school.email}" class="contact-link" onclick="event.stopPropagation()">✉️ Почта</a>` : ''}
+                            ${school.website ? `<a href="${school.website}" target="_blank" class="contact-link" onclick="event.stopPropagation()">🌐 Сайт</a>` : ''}
+                            ${school.telegram ? `<a href="${school.telegram}" target="_blank" class="contact-link" onclick="event.stopPropagation()">📱 Telegram</a>` : ''}
                         </div>
                     </div>
                 `;
@@ -666,7 +714,8 @@
                 'serbian': 'Сербский',
                 'hungarian': 'Венгерский',
                 'slovak': 'Словацкий',
-                'multilingual': 'Многоязычная'
+                'multilingual': 'Многоязычная',
+                'russian': 'Русский'
             };
             const languagesText = languages.map(lang => langMap[lang] || lang).join(', ');
             
@@ -680,9 +729,9 @@
                 <div>
                     <h4>${school.name}</h4>
                     <p><strong>Адрес:</strong> ${school.address}</p>
-                    <p><strong>Языки:</strong> ${languagesText}</p>
+                    <p><strong>Языки:</strong> ${languagesText || 'не указано'}</p>
                     ${distanceText}
-                    <p><strong>Телефон:</strong> ${school.phone}</p>
+                    ${school.phone ? `<p><strong>Телефон:</strong> ${school.phone}</p>` : ''}
                 </div>
             `;
         }
@@ -697,7 +746,7 @@
         }
         
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Радиус Земли в км
+            const R = 6371; // Radius of Earth in km
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = 
